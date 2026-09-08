@@ -9,13 +9,13 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// Blogger Feed URL (Retrieves JSON format directly from Blogger API)
-const BLOGGER_FEED_URL = 'https://edubyte-tech.blogspot.com/feeds/posts/default?alt=json';
+// Enhanced Blogger Feed URL with max-results parameters
+const BLOGGER_FEED_URL = 'https://edubyte-tech.blogspot.com/feeds/posts/default?alt=json&max-results=50';
 
-// In-Memory Storage for Post Views, Likes, Comments
+// In-Memory Storage for Views, Likes, and Comments
 const postMetrics = {};
 
-// Helper: Strip HTML tags to create short snippet summaries
+// Helper: Strip HTML tags for clean text card snippets
 function createSnippet(htmlStr, maxLength = 160) {
     if (!htmlStr) return '';
     const cleanText = htmlStr.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
@@ -23,19 +23,30 @@ function createSnippet(htmlStr, maxLength = 160) {
     return cleanText.substring(0, maxLength) + '...';
 }
 
-// 1. GET /api/posts - Fetch & Serve Full Blog Posts
+// Helper: Extract complete HTML body from Blogger post object
+function extractFullContent(entry) {
+    if (entry.content && entry.content.$t) {
+        return entry.content.$t;
+    }
+    if (entry.summary && entry.summary.$t) {
+        return entry.summary.$t;
+    }
+    return '';
+}
+
+// 1. GET /api/posts - Fetch & Serve Complete Blog Posts
 app.get('/api/posts', async (req, res) => {
     try {
         const response = await axios.get(BLOGGER_FEED_URL);
         const entries = response.data.feed.entry || [];
 
         const posts = entries.map((entry, index) => {
-            // Extract unique post ID
+            // Generate clean post ID
             const rawId = entry.id ? entry.id.$t : `post-${index}`;
             const id = rawId.split('post-').pop() || `id-${index}`;
 
-            // Extract Full Body Content
-            const fullContent = entry.content ? entry.content.$t : (entry.summary ? entry.summary.$t : '');
+            // Extract the FULL article HTML content
+            const fullHtmlContent = extractFullContent(entry);
 
             // Category tag
             const category = (entry.category && entry.category[0]) ? entry.category[0].term : 'Tech Blog';
@@ -44,7 +55,7 @@ app.get('/api/posts', async (req, res) => {
             const linkObj = entry.link ? entry.link.find(l => l.rel === 'alternate') : null;
             const link = linkObj ? linkObj.href : '';
 
-            // Initialize metrics if loading for the first time
+            // Initialize post metrics memory
             if (!postMetrics[id]) {
                 postMetrics[id] = { views: 0, likes: 0, comments: [] };
             }
@@ -54,8 +65,8 @@ app.get('/api/posts', async (req, res) => {
                 title: entry.title ? entry.title.$t : 'Untitled Post',
                 link: link,
                 category: category,
-                snippet: createSnippet(fullContent),
-                content: fullContent, // Send complete HTML content to frontend
+                snippet: createSnippet(fullHtmlContent),
+                content: fullHtmlContent, // Sent directly to the frontend reader modal
                 views: postMetrics[id].views,
                 likes: postMetrics[id].likes,
                 comments: postMetrics[id].comments
@@ -69,7 +80,7 @@ app.get('/api/posts', async (req, res) => {
         });
 
     } catch (err) {
-        console.error('Error fetching Blogger feed via Axios:', err.message);
+        console.error('Error fetching Blogger feed:', err.message);
         res.status(500).json({
             success: false,
             message: 'Failed to fetch Blogger posts',
@@ -78,7 +89,7 @@ app.get('/api/posts', async (req, res) => {
     }
 });
 
-// 2. POST /api/posts/:id/view - Increment View Counter
+// 2. POST /api/posts/:id/view - Increment Views
 app.post('/api/posts/:id/view', (req, res) => {
     const { id } = req.params;
     if (!postMetrics[id]) {
@@ -86,13 +97,10 @@ app.post('/api/posts/:id/view', (req, res) => {
     }
     postMetrics[id].views += 1;
 
-    res.json({
-        success: true,
-        views: postMetrics[id].views
-    });
+    res.json({ success: true, views: postMetrics[id].views });
 });
 
-// 3. POST /api/posts/:id/like - Increment Like Counter
+// 3. POST /api/posts/:id/like - Increment Likes
 app.post('/api/posts/:id/like', (req, res) => {
     const { id } = req.params;
     if (!postMetrics[id]) {
@@ -100,10 +108,7 @@ app.post('/api/posts/:id/like', (req, res) => {
     }
     postMetrics[id].likes += 1;
 
-    res.json({
-        success: true,
-        likes: postMetrics[id].likes
-    });
+    res.json({ success: true, likes: postMetrics[id].likes });
 });
 
 // 4. POST /api/posts/:id/comment - Add Comment
@@ -127,17 +132,14 @@ app.post('/api/posts/:id/comment', (req, res) => {
 
     postMetrics[id].comments.push(newComment);
 
-    res.json({
-        success: true,
-        comments: postMetrics[id].comments
-    });
+    res.json({ success: true, comments: postMetrics[id].comments });
 });
 
-// Root Endpoint Health Check
+// Health check endpoint
 app.get('/', (req, res) => {
-    res.send('EduByte Backend API (Axios Version) is online.');
+    res.send('EduByte Backend API is active.');
 });
 
 app.listen(PORT, () => {
-    console.log(`EduByte backend running on port ${PORT}`);
+    console.log(`Server listening on port ${PORT}`);
 });
