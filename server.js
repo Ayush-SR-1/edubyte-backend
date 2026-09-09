@@ -36,7 +36,7 @@ let posts = [
             <p>Artificial Intelligence, or AI, is a broad term used for computer systems that perform tasks requiring human-like intelligence. These tasks include learning from data, recognising patterns, understanding language, making recommendations, and solving problems.</p>
             <p>AI isn't a new concept. Simple AI has been present in video games, search engines, automated customer service systems, and recommendation systems for decades. Moreover, many advanced AI technologies are still being developed.</p>
 
-            <img src="./Fundamental-concept-of-Ai.png" alt="Fundamental Concepts of AI Mind Map" class="rounded-lg my-6 w-full object-cover max-h-96" />
+            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788944905/examples-of-ai-hallucination-explained-1536x851.png" alt="Fundamental Concepts of AI Mind Map" class="rounded-lg my-6 w-full object-cover max-h-96" />
 
             <p>Nowadays, when people talk about AI, they tend to make a big deal about it.</p>
             
@@ -53,7 +53,7 @@ let posts = [
             
             <p>AI lacks any specific aims, feelings, goals, or desires. It doesn't “want” anything. The system's functionality is based on its ability to recognise patterns from data and react to the input it receives.</p>
 
-            <img src="./original.webp" alt="Misinformation and Fake News Illustration" class="rounded-lg my-6 w-full object-cover max-h-96" />
+            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788944905/original.webp" alt="Misinformation and Fake News Illustration" class="rounded-lg my-6 w-full object-cover max-h-96" />
 
             <p>Science-fiction scenarios are not as pressing as issues like misinformation, privacy concerns, algorithmic bias, and excessive reliance on AI systems.</p>
 
@@ -64,7 +64,7 @@ let posts = [
             
             <p>Patterns acquired from vast amounts of text are used in ChatGPT, a language model that predicts the most probable arrangement of words. Unlike humans, they lack the ability to comprehend facts. This leads to the creation of information that appears convincing but is entirely inaccurate. An umbrella term frequently used to describe this phenomenon is <strong>AI hallucination</strong>.</p>
 
-            <img src="./examples-of-ai-hallucination-explained-1536x851.png" alt="Understanding AI Hallucinations Diagram" class="rounded-lg my-6 w-full object-cover max-h-96" />
+            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788944905/examples-of-ai-hallucination-explained-1536x851.png" alt="Understanding AI Hallucinations Diagram" class="rounded-lg my-6 w-full object-cover max-h-96" />
 
             <p><strong>The limitations of AI are due to:</strong></p>
             <ul class="list-disc pl-6 mb-4 space-y-1">
@@ -89,7 +89,7 @@ let posts = [
 
             <p>The majority of widely used AI tools are accessible through simple websites or apps requiring minimal technical expertise. While math, programming, and data science skills are necessary to <em>build</em> AI systems, utilizing them requires no coding at all.</p>
 
-            <img src="./ai-learning-classroom-innovation.jpeg" alt="Students and Teachers Using AI Technology in Classroom" class="rounded-lg my-6 w-full object-cover max-h-96" />
+            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788944775/ai-learning-classroom-innovation.jpg" alt="Students and Teachers Using AI Technology in Classroom" class="rounded-lg my-6 w-full object-cover max-h-96" />
 
             <p><strong>Fact:</strong> AI can be used effectively without coding knowledge. Asking the right questions (prompt engineering) is crucial.</p>
 
