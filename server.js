@@ -83,17 +83,96 @@ let posts = [
             <p>There was just one problem. The paper did not exist.</p>
             <p>It was my initial exposure to the phenomenon referred to as "hallucination" by AI researchers, and when one becomes aware of its presence, it becomes ubiquitous. Why? Experts caution against trusting an AI blindly, despite its odd and misunderstood behaviour in modern AI.</p>
 
+            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1000&q=80" alt="AI Neural Network Visualizing Data Flow" class="rounded-lg my-6 w-full object-cover max-h-80" />
+
+            <p>On this blog, I am going to elucidate what hallucinations are and why they occur and suggest some strategies for managing them.</p>
+
             <h2>What Is AI Hallucination?</h2>
             <p>In simple terms, hallucination is when an AI model generates information that sounds correct and confident, but is actually false, made up, or not grounded in reality.</p>
+            <p>This could be:</p>
+            <ul class="list-disc pl-6 mb-4 space-y-1">
+                <li>A fake statistic.</li>
+                <li>A statement that was never made by anyone.</li>
+                <li>A book, case, or research paper that is not available.</li>
+                <li>An event that never happened.</li>
+                <li>A date, name or fact that was incorrectly stated with absolute confidence.</li>
+            </ul>
+
+            <p>The issue at hand is not whether AI causes incorrect behaviour. Humans get things wrong too. It is a complex process that ensures AI conveys the wrong message with precision, accuracy, and sophistication. There's no built-in hesitation in its tone to warn you. Why?</p>
 
             <h2>Why Does This Happen?</h2>
-            <p>To understand hallucination, it helps to remember what a large language model (LLM) is actually doing under the hood. Patterns acquired from vast amounts of text enable them to predict the most probable next word.</p>
+            <p>To understand hallucination, it helps to remember what a large language model (LLM) is actually doing under the hood. The knowledge acquired through ChatGPT and other models is not comparable to that of a textbook or database. Patterns acquired from vast amounts of text enable them to predict the most probable next word.</p>
+
+            <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1000&q=80" alt="Complex Data Analysis Network" class="rounded-lg my-6 w-full object-cover max-h-80" />
+
+            <p>The model does not need to search a memory bank for the correct answer when you ask if anything is wrong. It's producing a set of words that presents essentially an adequate answer, considering all its previous observations. The outcome is positive.</p>
+            <p>Generally speaking, this works exceptionally well because the patterns in correct writing and facts often coincide. The model may fill a gap in its knowledge with an object that does not actually exist but instead conforms to the pattern of resolving the question.</p>
+
+            <p><strong>A few typical causes of a hallucination:</strong></p>
+            <ul class="list-disc pl-6 mb-4 space-y-1">
+                <li><strong>Gaps in training data:</strong> If the model was never trained on the specific fact, it may generate a plausible-sounding guess instead of admitting it doesn't know.</li>
+                <li><strong>No real "understanding":</strong> The model recognises patterns in language, not facts about the world.</li>
+                <li><strong>Ambiguous or tricky prompts:</strong> Vague questions can push the model toward invented specifics.</li>
+                <li><strong>Pressure to sound complete:</strong> Models are trained to give fluent, confident-sounding responses, not to say "I'm not sure."</li>
+            </ul>
 
             <blockquote class="border-l-4 border-cyan-500 pl-4 italic my-6 text-slate-300">
+                <strong>Fact:</strong> Hallucination isn't a bug that shows up occasionally by accident — it's a natural side effect of how these models are built to generate language.
+            </blockquote>
+
+            <blockquote class="border-l-4 border-cyan-500 pl-4 italic my-6 text-slate-300 font-serif text-lg">
                 "A model that's guessing well still sounds like a model that knows."
             </blockquote>
 
-            <p class="font-semibold text-cyan-300 my-4 text-lg">Stay curious, ask a tough question and remember: An AI that appears confident is not the same as an AI that is right.</p>
+            <h2>Myth: Only "Bad" or Older AI Models Hallucinate.</h2>
+            <p>It's tempting to think that hallucination is a problem that newer, more advanced models will simply outgrow. Unfortunately, that isn't quite true. Even the most advanced models available today can hallucinate, especially when:</p>
+            <ul class="list-disc pl-6 mb-4 space-y-1">
+                <li>Asked about very recent events.</li>
+                <li>Asked for precise numbers, citations, or sources.</li>
+                <li>Pushed to answer something outside their training data.</li>
+                <li>Asked highly specific or niche questions.</li>
+            </ul>
+
+            <p>Newer models have gotten noticeably better at reducing hallucinations, and some tools now cross-check answers using live web search, which helps a lot. But no model, however capable, can guarantee that every single response is 100% factually accurate.</p>
+
+            <p><strong>Fact:</strong> The more specific and detail-heavy a question is, the more important it becomes to verify the answer yourself.</p>
+
+            <h2>Why Does This Matter More Than It Seems?</h2>
+            <p>The impact of hallucinations, though minor and insignificant in casual contexts, varies depending on the application of AI:</p>
+            <ul class="list-disc pl-6 mb-4 space-y-1">
+                <li>A fake reference in academia can be deemed plagiarism or misrepresentation.</li>
+                <li>A mistake in medical knowledge could pose a genuine risk in healthcare.</li>
+                <li>An argument in the courtroom could be derailed by a case that is not present.</li>
+                <li>Journalism could be ruined by the use of an invented quote.</li>
+            </ul>
+
+            <p>To be precise, AI should only be viewed as a starting point and not an ultimate decision-maker. While an immediate response may be convenient, it still requires a rigorous examination to determine the validity of the answer.</p>
+
+            <blockquote class="border-l-4 border-cyan-500 pl-4 italic my-6 text-slate-300 font-serif text-lg">
+                "The cost of trusting a wrong answer is always higher than the cost of checking it."
+            </blockquote>
+
+            <h2>How can we address this issue?</h2>
+            <p>Fortunately, hallucination is not an uncontrolled phenomenon once you realise its presence. Some basic routines can make a big difference:</p>
+            <ul class="list-disc pl-6 mb-4 space-y-1">
+                <li><strong>Verify any information:</strong> It is advisable to double-check names, dates and statistics along with citations on an individual basis.</li>
+                <li><strong>Request sources:</strong> Ask the AI to use sources as input and verify their authenticity.</li>
+                <li><strong>Be specific in your prompts:</strong> Uncertain questions necessitate unreliable and sometimes fabricated responses.</li>
+                <li><strong>Treat AI as a prototype:</strong> Treat outputs as drafts rather than ultimate answers, especially for academic, professional, or factual purposes.</li>
+                <li><strong>Check with a second source:</strong> If something seems strange, double-check it elsewhere before trusting anything.</li>
+            </ul>
+
+            <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1000&q=80" alt="Verifying Information Concept Visual" class="rounded-lg my-6 w-full object-cover max-h-80" />
+
+            <p><strong>Fact:</strong> With a healthy dose of doubt, AI becomes an effective tool rather than just posing an evasive danger.</p>
+
+            <h2>The Bigger Picture</h2>
+            <p>The occurrence of hallucinations does not indicate that AI is unreliable or compromised. The reminder is that AI is a potent system that matches patterns, not an all-knowing spell. Once you grasp the distinction, it becomes much more effortless to utilise AI responsibly.</p>
+            <p>It is not the end of using these tools out of fear. To use them, one must use them in the same manner as any other reliable source, with curiosity and a habit of verifying facts.</p>
+
+            <p>The next blog post will be about the intricacies of generative AI and the distinction between "creative" and "made up".</p>
+
+            <p class="font-semibold text-cyan-300 my-4 text-lg">Until then... stay curious, ask a tough question and remember: An AI that appears confident is not the same as an AI that is right.</p>
             <p class="text-sm font-mono text-muted">Thanks for reading! 🚀</p>
         `,
         likes: 0,
