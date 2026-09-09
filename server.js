@@ -1,477 +1,155 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const cors = require('cors');
 
 const app = express();
+const PORT = process.env.PORT || 10000;
 
-// Enable CORS for all origins
-app.use(cors({ origin: '*' }));
+app.use(cors());
 app.use(express.json());
 
-// Trust proxy headers for Render deployment
-app.set('trust proxy', true);
-
-// Owner admin secret key
-const OWNER_SECRET_KEY = 'ayush-admin-secret'; 
-
-// In-memory posts store
-let posts = [
-    {
-        id: "1",
-        title: "AI Myths and Facts: Separating What’s Real from the Hype",
-        category: "AI & ML",
-        snippet: "From JEE Problems to AI Prompts: An Introduction by Ayush Singh Rathor. Dispelling the biggest misconceptions about AI and differentiating between reality and fiction.",
-        content: `
-            <p class="text-sm font-mono text-cyan-400 mb-6">--- By Ayush Singh Rathor, B.Tech CSE (AI & ML), VIT</p>
-
-            <h2>From JEE Problems to AI Prompts: An Introduction</h2>
-            <p>Despite taking several years to prepare, I finally succeeded in getting into the engineering branch where I had set my sights. VIT has a CSE program in CSEN, which includes courses in Artificial Intelligence and Machine Learning. Like many other engineering students, I was raised around technology and gadgets, programming especially, but AI always had its own distinct feel to it. The appearance of machines that could think, create, and converse seemed to be from a science fiction perspective.</p>
-            
-            <p>In the present day, AI is ubiquitous. You can count on it to suggest the next video you watch, navigate traffic properly, filter out spam emails or junk mail, modify photos, write essays, and create art. ChatGPT, machine learning and generative AI have become terms that are used in everyday conversation within a few years.</p>
-            
-            <p>Despite the excitement, there is a great deal of confusion. However, it is believed by some that AI may soon take over the world. Others believe it's always correct. The general belief is that it can solely be used by individuals in the programming and technology fields. There is a much more captivating and less dramatic reality.</p>
-            
-            <p>I want to dispel some of the biggest misconceptions about AI and differentiate between reality and fiction in this blog.</p>
-
-            <h2>What Exactly Is AI?</h2>
-            <p>Artificial Intelligence, or AI, is a broad term used for computer systems that perform tasks requiring human-like intelligence. These tasks include learning from data, recognising patterns, understanding language, making recommendations, and solving problems.</p>
-            <p>AI isn't a new concept. Simple AI has been present in video games, search engines, automated customer service systems, and recommendation systems for decades. Moreover, many advanced AI technologies are still being developed.</p>
-
-            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788944905/examples-of-ai-hallucination-explained-1536x851.png" alt="Fundamental Concepts of AI Mind Map" class="rounded-lg my-6 w-full object-cover max-h-96" />
-
-            <p>Nowadays, when people talk about AI, they tend to make a big deal about it.</p>
-            
-            <blockquote class="border-l-4 border-cyan-500 pl-4 italic my-6 text-slate-300">
-                <strong>Machine Learning (ML):</strong> An area of artificial intelligence where systems learn from data and improve over time rather than following fixed instructions.
-            </blockquote>
-
-            <p>Having grasped the basics of AI, let's decipher some familiar myths.</p>
-
-            <h2>Myth #1: AI is set to dominate the world.</h2>
-            <p>This is probably the most popular myth, thanks to movies and science fiction stories. The idea of super-intelligent machines controlling humanity sounds exciting, but it is far from reality.</p>
-            
-            <p>Modern AI systems are engineered to serve specific tasks. A text-generating AI cannot operate a car, bank account, or power grid without human intervention.</p>
-            
-            <p>AI lacks any specific aims, feelings, goals, or desires. It doesn't “want” anything. The system's functionality is based on its ability to recognise patterns from data and react to the input it receives.</p>
-
-            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788944905/original.webp" alt="Misinformation and Fake News Illustration" class="rounded-lg my-6 w-full object-cover max-h-96" />
-
-            <p>Science-fiction scenarios are not as pressing as issues like misinformation, privacy concerns, algorithmic bias, and excessive reliance on AI systems.</p>
-
-            <p><strong>Fact:</strong> AI is a system that is designed and engineered by humans. People are always responsible for its actions, not machines.</p>
-
-            <h2>Myth #2: Artificial Intelligence Is Always Correct.</h2>
-            <p>Many people assume that if an AI can provide a response with confidence, it must be accurate. Unfortunately, that isn't true.</p>
-            
-            <p>Patterns acquired from vast amounts of text are used in ChatGPT, a language model that predicts the most probable arrangement of words. Unlike humans, they lack the ability to comprehend facts. This leads to the creation of information that appears convincing but is entirely inaccurate. An umbrella term frequently used to describe this phenomenon is <strong>AI hallucination</strong>.</p>
-
-            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788944905/examples-of-ai-hallucination-explained-1536x851.png" alt="Understanding AI Hallucinations Diagram" class="rounded-lg my-6 w-full object-cover max-h-96" />
-
-            <p><strong>The limitations of AI are due to:</strong></p>
-            <ul class="list-disc pl-6 mb-4 space-y-1">
-                <li>Biases or inaccuracies in training data.</li>
-                <li>Information becoming outdated over time.</li>
-                <li>Persistent challenges in complex logical reasoning.</li>
-            </ul>
-
-            <p><strong>Fact:</strong> It is crucial to ensure that you are getting the correct information, particularly in fields like academia, law, healthcare, finance, and research.</p>
-
-            <h2>Myth #3: Only Technologists Are Allowed to Use AI.</h2>
-            <p>This myth could not be further from the truth. Modern AI tools are available to anyone—designed to be user-friendly for students, artists, teachers, entrepreneurs, and professionals alike.</p>
-
-            <p><strong>You are already utilizing AI on a daily basis:</strong></p>
-            <ul class="list-disc pl-6 mb-4 space-y-1">
-                <li>Google Maps suggests optimal routes.</li>
-                <li>Netflix recommends movies you might like.</li>
-                <li>Your phone organizes and tags photos.</li>
-                <li>Email services filter out spam automatically.</li>
-                <li>Voice assistants answer your everyday questions.</li>
-            </ul>
-
-            <p>The majority of widely used AI tools are accessible through simple websites or apps requiring minimal technical expertise. While math, programming, and data science skills are necessary to <em>build</em> AI systems, utilizing them requires no coding at all.</p>
-
-            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788944775/ai-learning-classroom-innovation.jpg" alt="Students and Teachers Using AI Technology in Classroom" class="rounded-lg my-6 w-full object-cover max-h-96" />
-
-            <p><strong>Fact:</strong> AI can be used effectively without coding knowledge. Asking the right questions (prompt engineering) is crucial.</p>
-
-            <h2>The Bigger Picture</h2>
-            <p>There is no magic formula for every problem or threat, and AI is not a machine to be conquered. Education, business, healthcare, entertainment, and daily life are all being transformed by this powerful tool.</p>
-            <p>Like any technology, AI has its advantages and disadvantages. Using it responsibly requires understanding both aspects. In my opinion, the study of AI and ML is no longer solely the responsibility of engineers—it is becoming a fundamental capability for everyone.</p>
-
-            <p class="font-semibold text-cyan-300 my-4 text-lg">Until then, stay curious, continue to learn, and remember: AI's objective is to enhance human intelligence, not to replace it.</p>
-            <p class="text-sm font-mono text-muted">Thanks for reading! 🚀</p>
-        `,
-        likes: 0,
-        views: 0,
-        likedIPs: [],      
-        commentedIPs: [],  
-        comments: []
-    },
-    {
-        id: "2",
-        title: "Why Does AI \"Lie\"? Understanding Hallucination in Large Language Models",
-        category: "AI Ethics",
-        snippet: "A confident response that was completely wrong. Exploring why LLMs hallucinate false statistics, papers, and facts, and how to verify AI output.",
-        content: `
-            <p class="text-sm font-mono text-cyan-400 mb-6">--- By Ayush Singh Rathor, B.Tech CSE (AI & ML), VIT</p>
-
-            <h2>A confident response that was completely wrong.</h2>
-            <p>A few weeks ago, while working on an assignment, I asked an AI chatbot for a reference for a fact I wanted to include. It gave me a neat, official-sounding citation — author name, journal, year, everything. It looked completely legitimate.</p>
-            <p>There was just one problem. The paper did not exist.</p>
-            <p>It was my initial exposure to the phenomenon referred to as "hallucination" by AI researchers, and when one becomes aware of its presence, it becomes ubiquitous. Why? Experts caution against trusting an AI blindly, despite its odd and misunderstood behaviour in modern AI.</p>
-
-            <p>On this blog, I am going to elucidate what hallucinations are and why they occur and suggest some strategies for managing them.</p>
-
-            <h2>What Is AI Hallucination?</h2>
-            <p>In simple terms, hallucination is when an AI model generates information that sounds correct and confident, but is actually false, made up, or not grounded in reality.</p>
-            <p>This could be:</p>
-            <ul class="list-disc pl-6 mb-4 space-y-1">
-                <li>A fake statistic.</li>
-                <li>A statement that was never made by anyone.</li>
-                <li>A book, case, or research paper that is not available.</li>
-                <li>An event that never happened.</li>
-                <li>A date, name, or fact that was incorrectly stated with absolute confidence.</li>
-            </ul>
-
-            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788945403/deep-learning-illustration-generative-ai-scaled.jpg" alt="Deep Learning and Generative AI Illustration" class="rounded-lg my-6 w-full object-cover max-h-96" />
-
-            <p>The issue at hand is not whether AI causes incorrect behaviour. Humans get things wrong too. It is a complex process that ensures AI conveys the wrong message with precision, accuracy, and sophistication. There's no built-in hesitation in its tone to warn you. Why?</p>
-
-            <h2>Why Does This Happen?</h2>
-            <p>To understand hallucination, it helps to remember what a large language model (LLM) is actually doing under the hood. The knowledge acquired through ChatGPT and other models is not comparable to that of a textbook or database. Patterns acquired from vast amounts of text enable them to predict the most probable next word.</p>
-
-            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788945402/images.jpg" alt="LLM Language Prediction Concept" class="rounded-lg my-6 w-full object-cover max-h-80" />
-
-            <p>The model does not need to search a memory bank for the correct answer when you ask if anything is wrong. It's producing a set of words that presents essentially an adequate answer, considering all its previous observations. The outcome is positive.</p>
-            <p>Generally speaking, this works exceptionally well because the patterns in correct writing and facts often coincide. The model may fill a gap in its knowledge with an object that does not actually exist but instead conforms to the pattern of resolving the question.</p>
-
-            <p><strong>A few typical causes of a hallucination:</strong></p>
-            <ul class="list-disc pl-6 mb-4 space-y-1">
-                <li><strong>Gaps in training data:</strong> If the model was never trained on the specific fact, it may generate a plausible-sounding guess instead of admitting it doesn't know.</li>
-                <li><strong>No real "understanding":</strong> The model recognises patterns in language, not facts about the world.</li>
-                <li><strong>Ambiguous or tricky prompts:</strong> Vague questions can push the model toward invented specifics.</li>
-                <li><strong>Pressure to sound complete:</strong> Models are trained to give fluent, confident-sounding responses, not to say "I'm not sure."</li>
-            </ul>
-
-            <blockquote class="border-l-4 border-cyan-500 pl-4 italic my-6 text-slate-300">
-                <strong>Fact:</strong> Hallucination isn't a bug that shows up occasionally by accident — it's a natural side effect of how these models are built to generate language.
-            </blockquote>
-
-            <blockquote class="border-l-4 border-cyan-500 pl-4 italic my-6 text-slate-300 font-serif text-lg">
-                "A model that's guessing well still sounds like a model that knows."
-            </blockquote>
-
-            <h2>Myth: Only "Bad" or Older AI Models Hallucinate.</h2>
-            <p>It's tempting to think that hallucination is a problem that newer, more advanced models will simply outgrow. Unfortunately, that isn't quite true. Even the most advanced models available today can hallucinate, especially when:</p>
-            <ul class="list-disc pl-6 mb-4 space-y-1">
-                <li>Asked about very recent events.</li>
-                <li>Asked for precise numbers, citations, or sources.</li>
-                <li>Pushed to answer something outside their training data.</li>
-                <li>Asked highly specific or niche questions.</li>
-            </ul>
-
-            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788945403/glm-4-7-ai-model.jpg" alt="Advanced AI Language Models Comparison" class="rounded-lg my-6 w-full object-cover max-h-80" />
-
-            <p>Newer models have gotten noticeably better at reducing hallucinations, and some tools now cross-check answers using live web search, which helps a lot. But no model, however capable, can guarantee that every single response is 100% factually accurate.</p>
-
-            <p><strong>Fact:</strong> The more specific and detail-heavy a question is, the more important it becomes to verify the answer yourself.</p>
-
-            <h2>Why Does This Matter More Than It Seems?</h2>
-            <p>The impact of hallucinations, though minor in casual contexts, varies depending on the application of AI:</p>
-            <ul class="list-disc pl-6 mb-4 space-y-1">
-                <li>A fake reference in academia can be deemed plagiarism or misrepresentation.</li>
-                <li>A mistake in medical knowledge could pose a genuine risk in healthcare.</li>
-                <li>An argument in the courtroom could be derailed by a case that is not present.</li>
-                <li>Journalism could be ruined by the use of an invented quote.</li>
-            </ul>
-
-            <p>To be precise, AI should only be viewed as a starting point and not an ultimate decision-maker. While an immediate response may be convenient, it still requires a rigorous examination to determine the validity of the answer.</p>
-
-            <blockquote class="border-l-4 border-cyan-500 pl-4 italic my-6 text-slate-300 font-serif text-lg">
-                "The cost of trusting a wrong answer is always higher than the cost of checking it."
-            </blockquote>
-
-            <h2>How can we address this issue?</h2>
-            <p>Fortunately, hallucination is not an uncontrolled phenomenon once you realise its presence. Some basic routines can make a big difference:</p>
-            <ul class="list-disc pl-6 mb-4 space-y-1">
-                <li><strong>Verify any information:</strong> Double-check names, dates, statistics, and citations individually.</li>
-                <li><strong>Request source inputs:</strong> Ask the AI to use provided sources as input and verify their authenticity.</li>
-                <li><strong>Be specific in your prompts:</strong> Uncertain questions necessitate unreliable and sometimes fabricated responses.</li>
-                <li><strong>Treat AI as a prototype:</strong> Treat outputs as drafts rather than ultimate answers, especially for academic, professional, or factual purposes.</li>
-                <li><strong>Check with a second source:</strong> If something seems strange, double-check it elsewhere before trusting anything.</li>
-            </ul>
-
-            <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1000&q=80" alt="Verifying Information Concept Visual" class="rounded-lg my-6 w-full object-cover max-h-80" />
-
-            <p><strong>Fact:</strong> With a healthy dose of doubt, AI becomes an effective tool rather than an evasive danger.</p>
-
-            <h2>The Bigger Picture</h2>
-            <p>The occurrence of hallucinations does not indicate that AI is unreliable or compromised. It is a reminder that AI is a potent pattern-matching system, not an all-knowing spell. Once you grasp the distinction, it becomes much more effortless to utilise AI responsibly.</p>
-            <p>It is not the end of using these tools out of fear. To use them effectively, one must treat them as they would any other resource: with curiosity and a habit of verifying facts.</p>
-
-            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788945404/AI-hallucinations-featuring-a-humanoid-AI-figure-with-a-fragmented-face-where-parts-dissolve-into-swirling-streams-of.webp" alt="Conceptual AI Hallucination Illustration" class="rounded-lg my-6 w-full object-cover max-h-96" />
-
-            <p class="font-semibold text-cyan-300 my-4 text-lg">Until then... stay curious, ask a tough question, and remember: An AI that appears confident is not the same as an AI that is right.</p>
-            <p class="text-sm font-mono text-muted">Thanks for reading! 🚀</p>
-        `,
-        likes: 0,
-        views: 0,
-        likedIPs: [],
-        commentedIPs: [],
-        comments: []
-    },
-    {
-        id: "3",
-        title: "Can We Trust AI-Generated Information?",
-        category: "AI Verification",
-        snippet: "Three real-world cautionary tales from courtrooms, search engines, and news publications showing why fluent language is not the same as a true statement.",
-        content: `
-            <p class="text-sm font-mono text-cyan-400 mb-6">--- By Ayush Singh Rathor, B.Tech CSE (AI & ML) student from VIT</p>
-
-            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788946158/image_5b8374ed.jpg" alt="AI Trust Digital Verification" class="rounded-lg my-6 w-full object-cover max-h-80" />
-
-            <p>The concept of AI trust digital verification utilises a checkmark/question-mark combination with digital elements to visually connect.</p>
-
-            <blockquote class="border-l-4 border-cyan-500 pl-4 italic my-6 text-slate-300 font-serif text-lg">
-                "Fluent is not a true statement."
-            </blockquote>
-
-            <p>The three authentic narratives that tackle this challenge in a way that surpasses any other interpretation.</p>
-
-            <p>I wrote about AI hallucination in my previous blog, which is the peculiar customary behaviour of artificial intelligence models that involves making false statements with absolute confidence. I aim to push the idea out of the world of theory and into the real world, as the notion that AI can be wrong may appear inconsequential until it is proven accurate without any examination.</p>
-
-            <p>I want to start with three stories instead of a definition. What are they?<br>
-            Using ChatGPT, an Attorney with a Court Case Provided Me With Them.<br>
-            The example of a legal case can be found in the law court gavel document.</p>
-
-            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788946157/ChatGPT-Image-Dec-3-2025-06_40_26-PM.png.webp" alt="Law Court Gavel and Legal Document" class="rounded-lg my-6 w-full object-cover max-h-80" />
-
-            <p>A New York lawyer, Steven Schwartz, utilised ChatGPT to gather legal precedent for a personal injury case, Matia v. Avianca, in 2023. The device provided him with entirely genuine case citations that contained the cases' names, courts, and legal reasoning. When he asked ChatGPT directly about the cases, the chatbot provided him with an assurance that they were genuine.</p>
-
-            <p>They weren't. The lawyers who tried to find the cases did not discover any. In addition, the lawyers were fined for creating false judicial opinions with fake quotes and citations generated by ChatGPT, according to one of the federal judges in charge of overseeing the case.</p>
-
-            <p>This story is worth knowing for more than just a mistake. It should be noted that this was not an isolated incident. The latest information reveals that there are roughly 900 individuals in question. From 2023 onwards, US courts have documented AI hallucinations, and in 2026, a federal judge punished two lawyers for submitting false references and phoney quotes in one case, which resulted in the most significant penalty for AI law violations. It's a regular occurrence in courtrooms, not an uncommon anomaly. Confidentiality and genuine citations are not the same, and the gap can be quite costly in professional fields.</p>
-
-            <p>During the time when Google's AI advised people to eat rocks,</p>
-
-            <p>This search-related AI error problem is depicted in this picture — Search engine error concept.</p>
-
-            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788946158/images.jpg" alt="Search Engine Error Concept" class="rounded-lg my-6 w-full object-cover max-h-80" />
-
-            <p>Google unveiled "AI Overviews" in May 2024, which offers a feature to display search results at the top of the page using artificial intelligence. The tool's witty suggestions, which included the suggestion of eating rocks and using glue to stick cheese on pizza, were shared online within days.</p>
-
-            <p>The advice given for rock music was based on a humorous post, and the idea for glue was inspired by an old Reddit thread that suggested using non-toxic glue in pizza sauce. The AI did not recognise the jokes as such, but rather adopted the form of frank, authoritative language and repeated it as if it were real-life advice.</p>
-
-            <p>Google's director of search admitted the results emphasised areas that the tool should be working on to improve, such as handling silly questions and parodies. An AI model is incapable of distinguishing between a joke and believable facts, instead recognising patterns in the way confident words are written.</p>
-
-            <h2>A publication that suggested books that were not available....</h2>
-
-            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788946158/download.jpg" alt="Printed Press Books and Publication" class="rounded-lg my-6 w-full object-cover max-h-80" />
-
-            <p>The publishing example is a good fit for the publication being printed using press books.</p>
-
-            <p>The Chicago Sun-Times and the Philadelphia Inquirer both released a suggested summer reading list in May 2025, featuring books by established, authentic authors. Despite the recommendation of fifteen books, only five were genuine, which was problematic. The rest were AI-generated masterpieces, containing plausible plot summaries, that were attributed to authors who had never written them.</p>
-
-            <p>The freelance writer who was in charge of the list admitted to using AI and not verifying its content before submitting it. This was unacceptable to the newspaper, which immediately launched an inquiry into how it got printed.</p>
-
-            <p>The significance of this story lies in the fact that unlike a search engine or courtroom, it was primarily derived from e-books, which many readers believe had some sort of editorial process before being published. Publishers may overlook AI-generated content that appears polished and professionally written, but is actually entirely artificial.</p>
-
-            <h2>How do these three stories compare to each other?</h2>
-
-            <p>"Graphic connection concept illustration" This image shows how the three examples are related visually.</p>
-
-            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788946157/download_1.jpg" alt="Graphic Connection Concept Illustration" class="rounded-lg my-6 w-full object-cover max-h-80" />
-
-            <p>An attorney, a search engine, and a newspaper. The reason for trusting AI-generated content in the same way as trusting a verified source is evident in three distinct fields, but not related to it.</p>
-
-            <p>These are not intentional AI actions, which implies that they are unintentional. The model produced fluent, confident-sounding content that matched the shape of an accurate answer in each case without being true. It was not the kind of person who fell into that trap, as an experienced lawyer, a large tech firm and even an established newspaper would. It is easy to trust something more when it appears more official, such as a citation, summary or printed list, and AI has the ability to create that impression with great accuracy.</p>
-
-            <h2>Can we rely on AI-generated data?</h2>
-            <p>The concept of checking checklists and verifying steps is reinforced in the practical habits section.</p>
-
-            <p>It is only with some effort that we can say honestly: partially.</p>
-
-            <p>The use of AI can aid in writing, summarising, brainstorming, and attempting to make sense of a topic. The final word on facts, particularly specific ones like names, numbers, quotes, citations, and sources, is its weakest point.</p>
-
-            <p>A few habits that could have prevented the collapse of the three stories above:</p>
-
-            <ul class="list-disc pl-6 mb-4 space-y-1">
-                <li>Never submit or publish AI-generated facts without verifying them against an independent source.</li>
-                <li>Citations, quotes and statistics should be treated as unverified until confirmed, even if the AI itself confirms them.</li>
-                <li>Be aware that a confident demeanour is not indicative of success.</li>
-                <li>Despite its intended message, AI does not appear uncertain.</li>
-                <li>Use AI for structure and drafting, while humans or verified databases are used for facts.</li>
-            </ul>
-
-            <blockquote class="border-l-4 border-cyan-500 pl-4 italic my-6 text-slate-300">
-                "The cost of trusting a wrong answer is always greater than the cost to verify it."
-            </blockquote>
-
-            <h2>The Bigger Picture</h2>
-            <p>The use of AI tools is still prevalent among all three involved organisations, not just those stories. They serve as reminders that AI-generated information is not classified as confirmed, even if it reads similarly. Why?</p>
-
-            <p>Its voice will not be hesitant due to the technology. Those responsible for reading, publishing, and citing its output are still under our responsibility.</p>
-
-            <p>Next month, I intend to examine the boundary between AI's ability to create original content and its tendency to repeat outdated patterns.</p>
-
-            <p class="font-semibold text-cyan-300 my-4 text-lg">So, until then... stay curious and ask questions first... And remember: Just because it sounds good does not mean it is.</p>
-
-            <p class="text-sm font-mono text-muted">Thanks for reading! 🚀</p>
-        `,
-        likes: 0,
-        views: 0,
-        likedIPs: [],
-        commentedIPs: [],
-        comments: []
-    },
-    {
-        id: "4",
-        title: "Can AI Actually Be Creative?",
-        category: "AI & Art",
-        snippet: "An unexpected machine is not the same as an unintended machine. Exploring move 37, digital art competitions, and whether statistical probability equals artistic originality.",
-        content: `
-            <p class="text-sm font-mono text-cyan-400 mb-6">--- Ayush Singh Rathor, B.Tech CSE (AI & ML), VIT.</p>
-
-            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788946847/gettyimages-2211086269-612x612.jpg" alt="AI and Human Creativity Concept" class="rounded-lg my-6 w-full object-cover max-h-80" />
-
-            <blockquote class="border-l-4 border-cyan-500 pl-4 italic my-6 text-slate-300 font-serif text-lg">
-                "An unexpected machine is not the same as an unintended machine."
-            </blockquote>
-
-            <p>While discussing trusting AI in my previous blog, I was left perplexed by whether AI is truly innovative or simply repeating existing information. This leads me to wonder. I want to approach this issue in a way that mirrors the emotional turmoil of spending many hours debating with Nanny before meeting anyone.</p>
-
-            <p>As a first, let me tell you: 'I think many of you have seen this painting and maybe not even seen it'.</p>
-
-            <p>In 2022, Jason Allen from Colorado participated in the Colorado State Fair's digital arts competition by submitting his work "Théâtre D'opéra Spatial." A grand hall is adorned with statues, each depicting a classical figure gazing through alternating windows at luminous, dreamy scenery. It appears that the painting took place over a prolonged period. Despite the challenges, he managed to complete his task with Midjourney, typing and editing around 624 prompts until achieving his desired outcome. And it won first place. Artists were furious. After years of practising brushwork, you can picture yourself winning by typing words in a box.</p>
-
-            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788946848/images_1.jpg" alt="AI-generated painting created by Midjourney" class="rounded-lg my-6 w-full object-cover max-h-80" />
-
-            <p>Here is where things become interesting. The U.S. Copyright Office refused to protect the image and declared that it was not "authorship by humans" in legal terms. Since then, Allen has been insisting, maintaining that typing 624 carefully thought-out prompts is no different from a photographer choosing an angle. However, the Copyright Office is not so convinced. That battle is currently being heard in the federal court system.</p>
-
-            <p>Even the artists who were furious did not consider themselves to be bad because of the image. Nobody argued that. Can typing words in a box be considered making something, as the real argument was? That's a tough question to answer, right?</p>
-
-            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788946848/images_2.jpg" alt="Digital Art and Prompt Generation Concept" class="rounded-lg my-6 w-full object-cover max-h-80" />
-
-            <p>Allow me to move on to a completely different tale. In 2016, DeepMind's AlphaGo played the world's best Go player, Lee Sedol. The second game saw AlphaGo take on a new challenge, one where the professional side would never venture. Breaks the centuries-old tradition of defining strong positions. According to the commentators, it's a glitch. After fifteen minutes, Lee Sedol leaves the room. Why?</p>
-
-            <p>As expected, it was not a mistake. Even though people are still studying it, the decision to adopt Move 37 was remarkable. Winning strategy. By playing games against itself for the millions of hours it took AlphaGo to reach its goal, learning which patterns were most effective and applied an application that was previously unknown to anyone. The concept of elegance is not understood by it. No idea surprised anyone. Simply applying mathematical principles to achieve a better outcome resulted in redefining the way humans engage in an ancient game.</p>
-
-            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788946848/gettyimages-1021985274-612x612.jpg" alt="Abstract neural network pattern art" class="rounded-lg my-6 w-full object-cover max-h-80" />
-
-            <p>Do you perceive tension in this situation? The reason why this question is so difficult to answer is that these two stories are moving in opposite directions. Allen's artwork appears imaginative because of the numerous prompts, thoughtful choices, and a specific vision he was striving for. This is an artistic expression that captures his sense of purpose. Instead of imagining "Victorian dress" or "space opera," the model relies on statistical patterns from millions of images. The creative move by AlphaGo was a result of its truly innovative and valuable concept, but there was no purpose behind it. Having intention does not guarantee originality within the machine. One has a radical idea but no intention.</p>
-
-            <p>Those two poles are where AI-generated art, writing, and music can be found. A model learns the underlying patterns and combines them in ways that are unfamiliar to us after training on millions of samples. That is genuinely useful. Sometimes it's genuinely beautiful. A human artist would not have chosen precisely the same colour if they were trying to find a certain memory or emotion. Why? But the AI has no choice. It has a probability distribution.</p>
-
-            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788946847/gettyimages-1366124869-612x612.jpg" alt="The artist painting studio creative process" class="rounded-lg my-6 w-full object-cover max-h-80" />
-
-            <p>Is it possible for AI to possess originality? Honestly, it depends on the area of creativity you are asking about. Move 37 is a clear demonstration of the importance of creating something new and valuable that was not possible before. The intention behind the work is not present in any existing objects, but rather in an inner reason or purpose. This is a subjective statement. When an AI painting is created, the human artist is genuinely creating the message by typing the instructions. The model's the brush. A very capable brush. Still a brush.</p>
-
-            <blockquote class="border-l-4 border-cyan-500 pl-4 italic my-6 text-slate-300 font-serif text-lg">
-                "The process of developing a machine is effortless.<br>
-                Our job is still to add meaning."
-            </blockquote>
-
-            <p>If we are to truly appreciate the creativity of AI, it is perhaps best to prioritise how much we want that technology to contribute to our own processes. Midjourney provided the vision, but Allen continued to have it. The crucial point is to be truthful about where our creative decisions terminate, and the model's pattern-matching begins.</p>
-
-            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788946848/images_4.jpg" alt="Human and AI Working Together" class="rounded-lg my-6 w-full object-cover max-h-80" />
-
-            <p>During the next discussion, I'd like to explore whether using AI for homework is actually improving our intelligence or simply making us more insecure.</p>
-
-            <p class="font-semibold text-cyan-300 my-4 text-lg">Until that moment, keep exploring, persist in creating new things, and remember: The image can be generated by the machine. You must still decide if it's important.</p>
-
-            <p class="text-sm font-mono text-muted">Thanks for reading! 🚀</p>
-        `,
-        likes: 0,
-        views: 0,
-        likedIPs: [],
-        commentedIPs: [],
-        comments: []
-    }
+// Database Connection
+const MONGODB_URI = process.env.MONGODB_URI;
+
+if (!MONGODB_URI) {
+  console.error("MONGODB_URI environment variable missing!");
+} else {
+  mongoose.connect(MONGODB_URI)
+    .then(() => console.log("Connected to MongoDB Atlas"))
+    .catch((err) => console.error("MongoDB connection error:", err));
+}
+
+// Mongoose Schema
+const postSchema = new mongoose.Schema({
+  id: { type: String, required: true, unique: true },
+  title: { type: String, required: true },
+  summary: { type: String, required: true },
+  content: { type: String, default: "" },
+  image: { type: String, default: "" },
+  views: { type: Number, default: 0 },
+  likes: { type: Number, default: 0 },
+  comments: [{
+    id: String,
+    author: String,
+    text: String,
+    createdAt: { type: Date, default: Date.now }
+  }]
+});
+
+const Post = mongoose.model('Post', postSchema);
+
+// Initial Seed Data
+const seedPosts = [
+  {
+    id: "post-1",
+    title: "Getting Started with Web Development",
+    summary: "Learn the fundamentals of modern full-stack development.",
+    views: 0,
+    likes: 0,
+    comments: []
+  },
+  {
+    id: "post-2",
+    title: "Mastering Node.js and Express",
+    summary: "Build fast, scalable backend services with JavaScript.",
+    views: 0,
+    likes: 0,
+    comments: []
+  },
+  {
+    id: "post-3",
+    title: "Database Persistence with MongoDB",
+    summary: "How to store and query operational data reliably.",
+    views: 0,
+    likes: 0,
+    comments: []
+  },
+  {
+    id: "post-4",
+    title: "Deploying Web Apps to Render",
+    summary: "Step-by-step production setup for backend microservices.",
+    views: 0,
+    likes: 0,
+    comments: []
+  }
 ];
-
-// Helper functions
-function getClientIp(req) {
-    return req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip || req.socket.remoteAddress;
-}
-
-function isOwner(req) {
-    return req.headers['x-owner-key'] === OWNER_SECRET_KEY;
-}
 
 // Routes
 
-// 1. Fetch All Posts
-app.get('/api/posts', (req, res) => {
-    res.json({ success: true, posts });
+// 1. Seed Endpoint
+app.get('/api/seed', async (req, res) => {
+  try {
+    await Post.deleteMany({});
+    await Post.insertMany(seedPosts);
+    res.json({ success: true, message: "Database seeded successfully!" });
+  } catch (err) {
+    res.status(500).json({ error: "Seeding failed", details: err.message });
+  }
 });
 
-// 2. Increment Views
-app.post('/api/posts/:id/view', (req, res) => {
-    const post = posts.find(p => p.id === req.params.id);
-    if (!post) return res.status(404).json({ success: false, message: 'Post not found' });
-
-    post.views = (post.views || 0) + 1;
-    res.json({ success: true, views: post.views });
+// 2. Fetch All Posts
+app.get('/api/posts', async (req, res) => {
+  try {
+    const posts = await Post.find();
+    res.json(posts);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch posts" });
+  }
 });
 
-// 3. Like Post
-app.post('/api/posts/:id/like', (req, res) => {
-    const post = posts.find(p => p.id === req.params.id);
-    if (!post) return res.status(404).json({ success: false, message: 'Post not found' });
-
-    const clientIp = getClientIp(req);
-    post.likedIPs = post.likedIPs || [];
-
-    if (!isOwner(req) && post.likedIPs.includes(clientIp)) {
-        return res.status(400).json({ 
-            success: false, 
-            message: 'You have already liked this post.',
-            likes: post.likes
-        });
-    }
-
-    if (!isOwner(req)) {
-        post.likedIPs.push(clientIp);
-    }
-
-    post.likes = (post.likes || 0) + 1;
-    res.json({ success: true, likes: post.likes });
+// 3. Increment Views & Get Single Post
+app.get('/api/posts/:id', async (req, res) => {
+  try {
+    const post = await Post.findOneAndUpdate(
+      { id: req.params.id },
+      { $inc: { views: 1 } },
+      { new: true }
+    );
+    if (!post) return res.status(404).json({ error: "Post not found" });
+    res.json(post);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch post" });
+  }
 });
 
-// 4. Comment on Post
-app.post('/api/posts/:id/comment', (req, res) => {
-    const post = posts.find(p => p.id === req.params.id);
-    if (!post) return res.status(404).json({ success: false, message: 'Post not found' });
-
-    const clientIp = getClientIp(req);
-    post.commentedIPs = post.commentedIPs || [];
-
-    if (!isOwner(req) && post.commentedIPs.includes(clientIp)) {
-        return res.status(400).json({ 
-            success: false, 
-            message: 'You have already commented on this post.' 
-        });
-    }
-
-    const { user, text } = req.body;
-    if (!text || text.trim() === '') {
-        return res.status(400).json({ success: false, message: 'Comment text is required.' });
-    }
-
-    if (!isOwner(req)) {
-        post.commentedIPs.push(clientIp);
-    }
-
-    const newComment = {
-        id: Date.now().toString(),
-        user: user && user.trim() ? user.trim() : 'Anonymous',
-        text: text.trim(),
-        date: new Date()
-    };
-
-    post.comments.push(newComment);
-    res.json({ success: true, comments: post.comments });
+// 4. Increment Likes
+app.post('/api/posts/:id/like', async (req, res) => {
+  try {
+    const post = await Post.findOneAndUpdate(
+      { id: req.params.id },
+      { $inc: { likes: 1 } },
+      { new: true }
+    );
+    if (!post) return res.status(404).json({ error: "Post not found" });
+    res.json(post);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to update like count" });
+  }
 });
 
-// Start server
-const PORT = process.env.PORT || 3000;
+// 5. Add Comment
+app.post('/api/posts/:id/comments', async (req, res) => {
+  const { author, text } = req.body;
+  if (!text) return res.status(400).json({ error: "Comment text is required" });
+
+  const comment = {
+    id: `c-${Date.now()}`,
+    author: author || 'Anonymous',
+    text,
+    createdAt: new Date()
+  };
+
+  try {
+    const post = await Post.findOneAndUpdate(
+      { id: req.params.id },
+      { $push: { comments: comment } },
+      { new: true }
+    );
+    if (!post) return res.status(404).json({ error: "Post not found" });
+    res.json(post);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to save comment" });
+  }
+});
+
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
