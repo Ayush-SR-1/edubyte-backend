@@ -5,151 +5,146 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 10000;
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Database Connection
+// MongoDB Atlas Connection
 const MONGODB_URI = process.env.MONGODB_URI;
 
-if (!MONGODB_URI) {
-    console.error("MONGODB_URI environment variable missing!");
-} else {
-    mongoose.connect(MONGODB_URI)
-    .then(() => console.log("Connected to MongoDB Atlas"))
-    .catch((err) => console.error("MongoDB connection error:", err));
-}
+mongoose.connect(MONGODB_URI)
+  .then(() => console.log('Connected to MongoDB Atlas'))
+  .catch((err) => console.error('MongoDB connection error:', err));
 
-// Mongoose Schema
+// Mongoose Schemas & Models
+const commentSchema = new mongoose.Schema({
+  author: { type: String, required: true },
+  content: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now }
+});
+
 const postSchema = new mongoose.Schema({
-    id: { type: String, required: true, unique: true },
-    title: { type: String, required: true },
-    summary: { type: String, required: true },
-    content: { type: String, default: "" },
-    image: { type: String, default: "" },
-    views: { type: Number, default: 0 },
-    likes: { type: Number, default: 0 },
-    comments: [{
-    id: String,
-    author: String,
-    text: String,
-    createdAt: { type: Date, default: Date.now }
-    }]
+  title: { type: String, required: true },
+  excerpt: { type: String, required: true },
+  content: { type: String, required: true },
+  author: { type: String, required: true },
+  category: { type: String, required: true },
+  readTime: { type: String, required: true },
+  date: { type: String, required: true },
+  views: { type: Number, default: 0 },
+  likes: { type: Number, default: 0 },
+  comments: [commentSchema]
 });
 
 const Post = mongoose.model('Post', postSchema);
 
-// Initial Seed Data
-const seedPosts = [
-    {
-    id: "post-1",
-    title: "Getting Started with Web Development",
-    summary: "Learn the fundamentals of modern full-stack development.",
-    views: 0,
-    likes: 0,
-    comments: []
-    },
-    {
-    id: "post-2",
-    title: "Mastering Node.js and Express",
-    summary: "Build fast, scalable backend services with JavaScript.",
-    views: 0,
-    likes: 0,
-    comments: []
-    },
-    {
-    id: "post-3",
-    title: "Database Persistence with MongoDB",
-    summary: "How to store and query operational data reliably.",
-    views: 0,
-    likes: 0,
-    comments: []
-    },
-    {
-    id: "post-4",
-    title: "Deploying Web Apps to Render",
-    summary: "Step-by-step production setup for backend microservices.",
-    views: 0,
-    likes: 0,
-    comments: []
-    }
-];
+// API Routes
 
-// Routes
-
-// 1. Seed Endpoint
-app.get('/api/seed', async (req, res) => {
-    try {
-    await Post.deleteMany({});
-    await Post.insertMany(seedPosts);
-    res.json({ success: true, message: "Database seeded successfully!" });
-    } catch (err) {
-    res.status(500).json({ error: "Seeding failed", details: err.message });
-    }
-});
-
-// 2. Fetch All Posts
+// Get all posts
 app.get('/api/posts', async (req, res) => {
-    try {
-    const posts = await Post.find();
+  try {
+    const posts = await Post.find().sort({ _id: -1 });
     res.json(posts);
-    } catch (err) {
-    res.status(500).json({ error: "Failed to fetch posts" });
-    }
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch posts' });
+  }
 });
 
-// 3. Increment Views & Get Single Post
+// Get single post and increment view count
 app.get('/api/posts/:id', async (req, res) => {
-    try {
-    const post = await Post.findOneAndUpdate(
-        { id: req.params.id },
-        { $inc: { views: 1 } },
-        { new: true }
+  try {
+    const post = await Post.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { views: 1 } },
+      { new: true }
     );
-    if (!post) return res.status(404).json({ error: "Post not found" });
+    if (!post) return res.status(404).json({ error: 'Post not found' });
     res.json(post);
-    } catch (err) {
-    res.status(500).json({ error: "Failed to fetch post" });
-    }
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch post' });
+  }
 });
 
-// 4. Increment Likes
+// Increment likes for a post
 app.post('/api/posts/:id/like', async (req, res) => {
-    try {
-    const post = await Post.findOneAndUpdate(
-        { id: req.params.id },
-        { $inc: { likes: 1 } },
-        { new: true }
+  try {
+    const post = await Post.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { likes: 1 } },
+      { new: true }
     );
-    if (!post) return res.status(404).json({ error: "Post not found" });
+    if (!post) return res.status(404).json({ error: 'Post not found' });
     res.json(post);
-    } catch (err) {
-    res.status(500).json({ error: "Failed to update like count" });
-    }
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to like post' });
+  }
 });
 
-// 5. Add Comment
-app.post('/api/posts/:id/comments', async (req, res) => {
-    const { author, text } = req.body;
-    if (!text) return res.status(400).json({ error: "Comment text is required" });
-
-    const comment = {
-    id: `c-${Date.now()}`,
-    author: author || 'Anonymous',
-    text,
-    createdAt: new Date()
-    };
-
-    try {
-    const post = await Post.findOneAndUpdate(
-        { id: req.params.id },
-        { $push: { comments: comment } },
-        { new: true }
-    );
-    if (!post) return res.status(404).json({ error: "Post not found" });
-    res.json(post);
-    } catch (err) {
-    res.status(500).json({ error: "Failed to save comment" });
+// Add a comment to a post
+app.post('/api/posts/:id/comment', async (req, res) => {
+  try {
+    const { author, content } = req.body;
+    if (!author || !content) {
+      return res.status(400).json({ error: 'Author and content are required' });
     }
+
+    const post = await Post.findById(req.params.id);
+    if (!post) return res.status(404).json({ error: 'Post not found' });
+
+    post.comments.push({ author, content });
+    await post.save();
+
+    res.status(201).json(post);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to add comment' });
+  }
 });
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+/* 
+  ===================================================================
+  SEED ROUTE (DISABLED FOR PRODUCTION SECURITY)
+  Uncomment only if you need to reset/re-seed your database in future.
+  ===================================================================
+  
+  app.get('/api/seed', async (req, res) => {
+    try {
+      await Post.deleteMany({});
+      await Post.insertMany([
+        {
+          title: "Getting Started with Node.js and Express",
+          excerpt: "Learn how to build scalable backends using Node.js, Express, and modern JavaScript practices.",
+          content: "Node.js has revolutionized web development by allowing developers to run JavaScript on the server side...",
+          author: "Ayush Singh",
+          category: "Backend",
+          readTime: "5 min read",
+          date: "Sep 9, 2026",
+          views: 120,
+          likes: 15,
+          comments: [
+            { author: "Alex", content: "Great article! Very clear explanation." }
+          ]
+        },
+        {
+          title: "Mastering MongoDB Atlas & Mongoose Integration",
+          excerpt: "A complete guide to connecting your Node backend to a managed MongoDB Atlas database in the cloud.",
+          content: "Database persistence is essential for modern web applications. MongoDB Atlas makes deployment seamless...",
+          author: "Ayush Singh",
+          category: "Database",
+          readTime: "7 min read",
+          date: "Sep 9, 2026",
+          views: 85,
+          likes: 22,
+          comments: []
+        }
+      ]);
+      res.json({ success: true, message: "Database seeded successfully!" });
+    } catch (error) {
+      res.status(500).json({ error: "Seeding failed", details: error.message });
+    }
+  });
+*/
+
+// Start Server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
