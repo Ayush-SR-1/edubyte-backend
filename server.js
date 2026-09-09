@@ -36,7 +36,7 @@ let posts = [
             <p>Artificial Intelligence, or AI, is a broad term used for computer systems that perform tasks requiring human-like intelligence. These tasks include learning from data, recognising patterns, understanding language, making recommendations, and solving problems.</p>
             <p>AI isn't a new concept. Simple AI has been present in video games, search engines, automated customer service systems, and recommendation systems for decades. Moreover, many advanced AI technologies are still being developed.</p>
 
-            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788944905/Fundamental-concept-of-Ai.png" alt="Fundamental Concepts of AI Mind Map" class="rounded-lg my-6 w-full object-cover max-h-96" />
+            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788944905/examples-of-ai-hallucination-explained-1536x851.png" alt="Fundamental Concepts of AI Mind Map" class="rounded-lg my-6 w-full object-cover max-h-96" />
 
             <p>Nowadays, when people talk about AI, they tend to make a big deal about it.</p>
             
@@ -119,7 +119,7 @@ let posts = [
             <p>There was just one problem. The paper did not exist.</p>
             <p>It was my initial exposure to the phenomenon referred to as "hallucination" by AI researchers, and when one becomes aware of its presence, it becomes ubiquitous. Why? Experts caution against trusting an AI blindly, despite its odd and misunderstood behaviour in modern AI.</p>
 
-            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788945404/AI-hallucinations-featuring-a-humanoid-AI-figure-with-a-fragmented-face-where-parts-dissolve-into-swirling-streams-of.webp" alt="AI Hallucinations Abstract Humanoid" class="rounded-lg my-6 w-full object-cover max-h-96" />
+            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1000&q=80" alt="AI Neural Network Visualizing Data Flow" class="rounded-lg my-6 w-full object-cover max-h-80" />
 
             <p>On this blog, I am going to elucidate what hallucinations are and why they occur and suggest some strategies for managing them.</p>
 
@@ -134,12 +134,14 @@ let posts = [
                 <li>A date, name, or fact that was incorrectly stated with absolute confidence.</li>
             </ul>
 
+            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788945403/deep-learning-illustration-generative-ai-scaled.jpg" alt="Deep Learning and Generative AI Illustration" class="rounded-lg my-6 w-full object-cover max-h-96" />
+
             <p>The issue at hand is not whether AI causes incorrect behaviour. Humans get things wrong too. It is a complex process that ensures AI conveys the wrong message with precision, accuracy, and sophistication. There's no built-in hesitation in its tone to warn you. Why?</p>
 
             <h2>Why Does This Happen?</h2>
             <p>To understand hallucination, it helps to remember what a large language model (LLM) is actually doing under the hood. The knowledge acquired through ChatGPT and other models is not comparable to that of a textbook or database. Patterns acquired from vast amounts of text enable them to predict the most probable next word.</p>
 
-            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788945403/glm-4-7-ai-model.jpg" alt="AI Large Language Model Concept" class="rounded-lg my-6 w-full object-cover max-h-96" />
+            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788945402/images.jpg" alt="LLM Language Prediction Concept" class="rounded-lg my-6 w-full object-cover max-h-80" />
 
             <p>The model does not need to search a memory bank for the correct answer when you ask if anything is wrong. It's producing a set of words that presents essentially an adequate answer, considering all its previous observations. The outcome is positive.</p>
             <p>Generally speaking, this works exceptionally well because the patterns in correct writing and facts often coincide. The model may fill a gap in its knowledge with an object that does not actually exist but instead conforms to the pattern of resolving the question.</p>
@@ -168,6 +170,8 @@ let posts = [
                 <li>Pushed to answer something outside their training data.</li>
                 <li>Asked highly specific or niche questions.</li>
             </ul>
+
+            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788945403/glm-4-7-ai-model.jpg" alt="Advanced AI Language Models Comparison" class="rounded-lg my-6 w-full object-cover max-h-80" />
 
             <p>Newer models have gotten noticeably better at reducing hallucinations, and some tools now cross-check answers using live web search, which helps a lot. But no model, however capable, can guarantee that every single response is 100% factually accurate.</p>
 
@@ -198,13 +202,15 @@ let posts = [
                 <li><strong>Check with a second source:</strong> If something seems strange, double-check it elsewhere before trusting anything.</li>
             </ul>
 
-            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788945402/images.jpg" alt="Verifying Information Concept Visual" class="rounded-lg my-6 w-full object-cover max-h-96" />
+            <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1000&q=80" alt="Verifying Information Concept Visual" class="rounded-lg my-6 w-full object-cover max-h-80" />
 
             <p><strong>Fact:</strong> With a healthy dose of doubt, AI becomes an effective tool rather than an evasive danger.</p>
 
             <h2>The Bigger Picture</h2>
             <p>The occurrence of hallucinations does not indicate that AI is unreliable or compromised. It is a reminder that AI is a potent pattern-matching system, not an all-knowing spell. Once you grasp the distinction, it becomes much more effortless to utilise AI responsibly.</p>
             <p>It is not the end of using these tools out of fear. To use them effectively, one must treat them as they would any other resource: with curiosity and a habit of verifying facts.</p>
+
+            <img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788945404/AI-hallucinations-featuring-a-humanoid-AI-figure-with-a-fragmented-face-where-parts-dissolve-into-swirling-streams-of.webp" alt="Conceptual AI Hallucination Illustration" class="rounded-lg my-6 w-full object-cover max-h-96" />
 
             <p class="font-semibold text-cyan-300 my-4 text-lg">Until then... stay curious, ask a tough question, and remember: An AI that appears confident is not the same as an AI that is right.</p>
             <p class="text-sm font-mono text-muted">Thanks for reading! 🚀</p>
