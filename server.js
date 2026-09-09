@@ -120,7 +120,7 @@ app.post('/api/posts/:id/comment', async (req, res) => {
   }
 });
 
-// Seed Endpoint containing all 3 posts (with index cleanup)
+// Seed Endpoint containing all 4 posts (with index cleanup)
 app.get('/api/seed', async (req, res) => {
   try {
     // Drop conflicting 'id_1' index if it exists in MongoDB Atlas
@@ -134,8 +134,61 @@ app.get('/api/seed', async (req, res) => {
     // Clear existing documents
     await Post.deleteMany({});
 
-    // Insert all three posts
+    // Insert all four posts
     await Post.insertMany([
+      {
+        title: "Can AI Actually Be Creative?",
+        excerpt: "Exploring the tension between human intention and algorithmic innovation through the stories of Théâtre D'opéra Spatial and AlphaGo's Move 37.",
+        content: `<p><b>By Ayush Singh Rathor, B.Tech CSE (AI & ML), VIT</b></p>
+        <p><img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788946847/gettyimages-2211086269-612x612.jpg" alt="AI and Human Creativity Concept" style="width:100%; max-width:700px; margin: 20px 0; border-radius: 8px;" /></p>
+        
+        <blockquote style="border-left: 4px solid #06b6d4; padding-left: 12px; margin: 16px 0; font-style: italic; color: #cbd5e1;">"An unexpected machine is not the same as an unintended machine."</blockquote>
+        
+        <p>While discussing trusting AI in my previous blog, I was left perplexed by whether AI is truly innovative or simply repeating existing information. This leads me to wonder. I want to approach this issue in a way that mirrors the emotional turmoil of spending many hours debating with Nanny before meeting anyone.</p>
+        <p>As a first, let me tell you: 'I think many of you have seen this painting and maybe not even seen it'.</p>
+        <p>In 2022, Jason Allen from Colorado participated in the Colorado State Fair's digital arts competition by submitting his work "Théâtre D'opéra Spatial." A grand hall is adorned with statues, each depicting a classical figure gazing through alternating windows at luminous, dreamy scenery. It appears that the painting took place over a prolonged period. Despite the challenges, he managed to complete his task with Midjourney, typing and editing around 624 prompts until achieving his desired outcome. And it won first place. Artists were furious. After years of practising brushwork, you can picture yourself winning by typing words in a box.</p>
+        
+        <p><img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788946848/images_1.jpg" alt="Théâtre D'opéra Spatial Midjourney Painting" style="width:100%; max-width:700px; margin: 20px 0; border-radius: 8px;" /></p>
+        
+        <p>Here is where things become interesting. The U.S. Copyright Office refused to protect the image and declared that it was not "authorship by humans" in legal terms. Since then, Allen has been insisting, maintaining that typing 624 carefully thought-out prompts is no different from a photographer choosing an angle. However, the Copyright Office is not so convinced. That battle is currently being heard in the federal court system.</p>
+        <p>Even the artists who were furious did not consider themselves to be bad because of the image. Nobody argued that. Can typing words in a box be considered making something, as the real argument was? That's a tough question to answer, right?</p>
+        
+        <p><img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788946848/images_2.jpg" alt="Human vs Machine Creation Debate" style="width:100%; max-width:700px; margin: 20px 0; border-radius: 8px;" /></p>
+        
+        <h3>AlphaGo and Move 37</h3>
+        <p>Allow me to move on to a completely different tale. In 2016, DeepMind's AlphaGo played the world's best Go player, Lee Sedol. The second game saw AlphaGo take on a new challenge, one where the professional side would never venture. Breaks the centuries-old tradition of defining strong positions. According to the commentators, it's a glitch. After fifteen minutes, Lee Sedol leaves the room. Why?</p>
+        <p>As expected, it was not a mistake. Even though people are still studying it, the decision to adopt Move 37 was remarkable. Winning strategy. By playing games against itself for the millions of hours it took AlphaGo to reach its goal, learning which patterns were most effective and applied an application that was previously unknown to anyone. The concept of elegance is not understood by it. No idea surprised anyone. Simply applying mathematical principles to achieve a better outcome resulted in redefining the way humans engage in an ancient game.</p>
+        
+        <p><img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788946848/gettyimages-1021985274-612x612.jpg" alt="Abstract Neural Network Pattern Art" style="width:100%; max-width:700px; margin: 20px 0; border-radius: 8px;" /></p>
+        
+        <h3>Tension Between Intent and Pattern</h3>
+        <p>Do you perceive tension in this situation? The reason why this question is so difficult to answer is that these two stories are moving in opposite directions. Allen's artwork appears imaginative because of the numerous prompts, thoughtful choices, and a specific vision he was striving for. This is an artistic expression that captures his sense of purpose. Instead of imagining "Victorian dress" or "space opera," the model relies on statistical patterns from millions of images. The creative move by AlphaGo was a result of its truly innovative and valuable concept, but there was no purpose behind it. Having intention does not guarantee originality within the machine. One has a radical idea but no intention.</p>
+        <p>Those two poles are where AI-generated art, writing, and music can be found. A model learns the underlying patterns and combines them in ways that are unfamiliar to us after training on millions of samples. That is genuinely useful. Sometimes it's genuinely beautiful. A human artist would not have chosen precisely the same colour if they were trying to find a certain memory or emotion. Why? But the AI has no choice. It has a probability distribution.</p>
+        
+        <p><img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788946847/gettyimages-1366124869-612x612.jpg" alt="Artist Painting Studio Creative Process" style="width:100%; max-width:700px; margin: 20px 0; border-radius: 8px;" /></p>
+        
+        <h3>Is Originality Possible?</h3>
+        <p>Is it possible for AI to possess originality? Honestly, it depends on the area of creativity you are asking about. Move 37 is a clear demonstration of the importance of creating something new and valuable that was not possible before. The intention behind the work is not present in any existing objects, but rather in an inner reason or purpose. This is a subjective statement. When an AI painting is created, the human artist is genuinely creating the message by typing the instructions. The model's the brush. A very capable brush. Still a brush.</p>
+        
+        <blockquote style="border-left: 4px solid #06b6d4; padding-left: 12px; margin: 16px 0; font-style: italic; color: #cbd5e1;">"The process of developing a machine is effortless. Our job is still to add meaning."</blockquote>
+        
+        <p>If we are to truly appreciate the creativity of AI, it is perhaps best to prioritise how much we want that technology to contribute to our own processes. Midjourney provided the vision, but Allen continued to have it. The crucial point is to be truthful about where our creative decisions terminate, and the model's pattern-matching begins.</p>
+        
+        <p><img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788946848/images_4.jpg" alt="Human and AI Working Together Collaboration" style="width:100%; max-width:700px; margin: 20px 0; border-radius: 8px;" /></p>
+        
+        <h3>The Bigger Picture</h3>
+        <p>During the next discussion, I'd like to explore whether using AI for homework is actually improving our intelligence or simply making us more insecure.</p>
+        <p>Until that moment, keep exploring, persist in creating new things, and remember:</p>
+        <p><b>The image can be generated by the machine. You must still decide if it's important.</b></p>
+        <p>Thanks for reading! 🚀</p>`,
+        author: "Ayush Singh Rathor",
+        category: "AI & ML",
+        readTime: "7 min read",
+        date: "Sep 9, 2026",
+        views: 0,
+        likes: 0,
+        comments: []
+      },
       {
         title: "Can We Trust AI-Generated Information?",
         excerpt: "From courtroom errors to invented book lists and Google AI Overviews, exploring real-world case studies of why confident AI fluency isn't the same as truth.",
@@ -329,7 +382,7 @@ app.get('/api/seed', async (req, res) => {
       }
     ]);
 
-    res.json({ success: true, message: "Database seeded successfully with all 3 articles!" });
+    res.json({ success: true, message: "Database seeded successfully with all 4 articles!" });
   } catch (error) {
     res.status(500).json({ error: "Seeding failed", details: error.message });
   }
