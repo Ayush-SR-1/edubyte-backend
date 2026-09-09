@@ -3,28 +3,66 @@ const cors = require('cors');
 
 const app = express();
 
-// Allow cross-origin requests
+// Enable CORS for all origins
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 
-// Trust proxy headers for deployment platforms like Render
+// Trust proxy headers for Render deployment
 app.set('trust proxy', true);
 
 // Owner admin secret key
 const OWNER_SECRET_KEY = 'ayush-admin-secret'; 
 
-// =========================================================================
-// REPLACE THE TEXT INSIDE `content` BELOW WITH YOUR EXACT BLOG ARTICLES
-// =========================================================================
+// In-memory posts store
 let posts = [
     {
         id: "1",
-        title: "Can AI Actually Be Creative?",
-        category: "AI Art",
-        snippet: "An unexpected machine is not the same as an unintended machine. While discussing creativity...",
+        title: "AI Myths and Facts: Separating What’s Real from the Hype",
+        category: "AI & ML",
+        snippet: "From JEE Problems to AI Prompts: An Introduction by Ayush Singh Rathor. Dispelling the biggest misconceptions about AI and differentiating between reality and fiction.",
         content: `
-            <p><strong>[REPLACE THIS TEXT WITH YOUR EXACT ARTICLE 1 CONTENT]</strong></p>
-            <p>Paste your first full blog post text here. You can use standard HTML tags like &lt;p&gt;, &lt;h2&gt;, &lt;ul&gt;, and &lt;li&gt; to style your headings, paragraphs, and lists.</p>
+            <p class="text-sm font-mono text-cyan-400 mb-6">--- By Ayush Singh Rathor, B.Tech CSE (AI & ML), VIT</p>
+
+            <h2>From JEE Problems to AI Prompts: An Introduction</h2>
+            <p>Despite taking several years to prepare, I finally succeeded in getting into the engineering branch where I had set my sights. VIT has a CSE program in CSEN, which includes courses in Artificial Intelligence and Machine Learning. Like many other engineering students, I was raised around technology and gadgets, programming especially, but AI always had its own distinct feel to it. The appearance of machines that could think, create, and converse seemed to be from a science fiction perspective.</p>
+            
+            <p>In the present day, AI is ubiquitous. You can count on it to suggest the next video you watch, navigate traffic properly, filter out spam emails or junk mail, modify photos, write essays, and create art. ChatGPT, machine learning and generative AI have become terms that are used in everyday conversation within a few years.</p>
+            
+            <p>Despite the excitement, there is a great deal of confusion. However, it is believed by some that AI may soon take over the world. Others believe it's always correct. The general belief is that it can solely be used by individuals in the programming and technology fields. There is a much more captivating and less dramatic reality.</p>
+            
+            <p>I want to dispel some of the biggest misconceptions about AI and differentiate between reality and fiction in this blog.</p>
+
+            <h2>What Exactly Is AI?</h2>
+            <p>Artificial Intelligence, or AI, is a broad term used for computer systems that perform tasks requiring human-like intelligence. These tasks include learning from data, recognising patterns, understanding language, making recommendations, and solving problems.</p>
+            <p>AI isn't a new concept. Simple AI has been present in video games, search engines, automated customer service systems, and recommendation systems for decades. Moreover, many advanced AI technologies are still being developed.</p>
+
+            <blockquote class="border-l-4 border-cyan-500 pl-4 italic my-6 text-slate-300">
+                <strong>Machine Learning (ML):</strong> An area of artificial intelligence where systems learn from data and improve over time rather than following fixed instructions.
+            </blockquote>
+
+            <p>Having grasped the basics of AI, let's decipher some familiar myths.</p>
+
+            <h2>Myth #1: AI is set to dominate the world.</h2>
+            <p>This is probably the most popular myth, thanks to movies and science fiction stories. The idea of super-intelligent machines controlling humanity sounds exciting, but it is far from reality.</p>
+            <p>Modern AI systems are engineered to serve specific tasks. A text-generating AI cannot operate a car, bank account, or power grid without human intervention.</p>
+            <p>AI lacks any specific aims, feelings, goals, or desires. It doesn't “want” anything. The system's functionality is based on its ability to recognise patterns from data and react to the input it receives.</p>
+            <p><strong>Fact:</strong> AI is a system that is designed and engineered by humans. People are always responsible for its actions, not machines.</p>
+
+            <h2>Myth #2: Artificial Intelligence Is Always Correct.</h2>
+            <p>Many people assume that if an AI can provide a response with confidence, it must be accurate. Unfortunately, that isn't true.</p>
+            <p>Patterns acquired from vast amounts of text are used in ChatGPT, a language model that predicts the most probable arrangement of words. Unlike humans, they lack the ability to comprehend facts. This leads to the creation of information that appears convincing but is entirely inaccurate, generated by AI. False dates, references, or inaccurate explanations may be generated. An umbrella term frequently used to describe this phenomenon is <strong>AI hallucination</strong>.</p>
+
+            <p><strong>Fact:</strong> It is crucial to ensure that you are getting the correct information, particularly in fields like academia, law, healthcare, finance, and research.</p>
+
+            <h2>Myth #3: Only technologists are allowed to use AI.</h2>
+            <p>This myth could not be further from the truth. AI tools of today are available to anyone—designed to be user-friendly for students, artists, teachers, entrepreneurs, and professionals.</p>
+
+            <p><strong>Fact:</strong> AI can be used effectively without coding knowledge. Asking the right questions (prompt engineering) is crucial.</p>
+
+            <h2>The Bigger Picture</h2>
+            <p>There is no magic formula for every problem or threat, and AI is not a machine to be conquered. Education, business, healthcare, entertainment, and daily life are all being transformed by this powerful tool.</p>
+            <p class="font-semibold text-cyan-300 my-4 text-lg">Until then, stay curious, continue to learn, and remember: AI's objective is to enhance human intelligence, not to replace it.</p>
+            <p class="text-sm font-mono text-muted">Thanks for reading! 🚀</p>
         `,
         likes: 0,
         views: 0,
@@ -34,12 +72,142 @@ let posts = [
     },
     {
         id: "2",
-        title: "Can We Trust AI-Generated Information?",
+        title: "Why Does AI \"Lie\"? Understanding Hallucination in Large Language Models",
         category: "AI Ethics",
-        snippet: "The concept of AI trust and digital verification utilizes structured validation against hallucinated data...",
+        snippet: "A confident response that was completely wrong. Exploring why LLMs hallucinate false statistics, papers, and facts, and how to verify AI output.",
         content: `
-            <p><strong>[REPLACE THIS TEXT WITH YOUR EXACT ARTICLE 2 CONTENT]</strong></p>
-            <p>Paste your second full blog post text here.</p>
+            <p class="text-sm font-mono text-cyan-400 mb-6">--- By Ayush Singh Rathor, B.Tech CSE (AI & ML), VIT</p>
+
+            <h2>A confident response that was completely wrong.</h2>
+            <p>A few weeks ago, while working on an assignment, I asked an AI chatbot for a reference for a fact I wanted to include. It gave me a neat, official-sounding citation — author name, journal, year, everything. It looked completely legitimate.</p>
+            <p>There was just one problem. The paper did not exist.</p>
+            <p>It was my initial exposure to the phenomenon referred to as "hallucination" by AI researchers, and when one becomes aware of its presence, it becomes ubiquitous. Why? Experts caution against trusting an AI blindly, despite its odd and misunderstood behaviour in modern AI.</p>
+
+            <h2>What Is AI Hallucination?</h2>
+            <p>In simple terms, hallucination is when an AI model generates information that sounds correct and confident, but is actually false, made up, or not grounded in reality.</p>
+
+            <h2>Why Does This Happen?</h2>
+            <p>To understand hallucination, it helps to remember what a large language model (LLM) is actually doing under the hood. Patterns acquired from vast amounts of text enable them to predict the most probable next word.</p>
+
+            <blockquote class="border-l-4 border-cyan-500 pl-4 italic my-6 text-slate-300">
+                "A model that's guessing well still sounds like a model that knows."
+            </blockquote>
+
+            <p class="font-semibold text-cyan-300 my-4 text-lg">Stay curious, ask a tough question and remember: An AI that appears confident is not the same as an AI that is right.</p>
+            <p class="text-sm font-mono text-muted">Thanks for reading! 🚀</p>
+        `,
+        likes: 0,
+        views: 0,
+        likedIPs: [],
+        commentedIPs: [],
+        comments: []
+    },
+    {
+        id: "3",
+        title: "Can We Trust AI-Generated Information?",
+        category: "AI Verification",
+        snippet: "Three real-world cautionary tales from courtrooms, search engines, and news publications showing why fluent language is not the same as a true statement.",
+        content: `
+            <p class="text-sm font-mono text-cyan-400 mb-6">--- By Ayush Singh Rathor, B.Tech CSE (AI & ML), VIT</p>
+
+            <blockquote class="border-l-4 border-cyan-500 pl-4 italic my-6 text-slate-300 font-serif text-lg">
+                "Fluent is not a true statement."
+            </blockquote>
+
+            <p>I wrote about AI hallucination in my previous blog — the peculiar behavior of artificial intelligence models making false statements with absolute confidence. I want to push this idea out of the world of theory and into the real world, because the notion that AI can be wrong may appear inconsequential until it occurs without any examination.</p>
+
+            <p>Instead of a technical definition, let’s look at three authentic narratives that tackle this challenge head-on.</p>
+
+            <h2>1. An Attorney with Fake Legal Precedents</h2>
+            <p>In 2023, a New York lawyer, Steven Schwartz, used ChatGPT to gather legal precedents for a personal injury case (Mata v. Avianca). The tool provided him with official-sounding citations containing case names, courts, and legal reasoning. When asked directly, the chatbot reassured him that the cases were genuine.</p>
+            <p>They were not. Opposing lawyers and the judge found no trace of them. The lawyers involved were ultimately sanctioned and fined for submitting false judicial opinions generated by ChatGPT.</p>
+            <p>This was not an isolated incident. Dozens of similar AI courtroom hallucinations have occurred, and courts have continued issuing strict penalties for AI violations. Confidence and genuine citation are simply not the same thing.</p>
+
+            <h2>2. Search Engines Recommending Glue and Rocks</h2>
+            <p>When Google unveiled "AI Overviews" to display search summaries at the top of pages, users quickly noticed bizarre results. Within days, screenshots went viral showing the AI suggesting people eat rocks or use non-toxic glue to keep cheese stuck to pizza.</p>
+            <p>The advice originated from old internet jokes and satire threads on Reddit. The AI model could not distinguish humor from actual advice; it merely recognized language patterns that resembled direct answers and presented them with an authoritative tone.</p>
+
+            <h2>3. Newspapers Recommending Books That Don't Exist</h2>
+            <p>In May 2025, major publications released recommended summer reading lists featuring books attributed to well-known authors. Out of fifteen suggested titles, only five were real books. The rest were completely invented by AI, complete with plausible plot summaries.</p>
+            <p>The freelance contributor had used AI to generate the list without verifying whether the books actually existed. Because AI generates polished, professional writing, false content can easily slip past editorial overview unless explicitly verified.</p>
+
+            <h2>What Do These Stories Reveal?</h2>
+            <p>An attorney, a search engine, and a news publisher — three vastly different fields sharing the exact same vulnerability. These errors were not intentional deceptions by the AI; the models were simply outputting confident, fluent text that matched the shape of a correct answer.</p>
+
+            <h2>Can We Rely on AI-Generated Data?</h2>
+            <p>The short answer is: <strong>Only partially.</strong></p>
+            <p>AI is an exceptional assistant for drafting, structuring, brainstorming, and making sense of ideas. However, its weakest point remains verified facts — specifically names, dates, quotes, and citations.</p>
+
+            <p><strong>Key Practical Habits for Working with AI:</strong></p>
+            <ul class="list-disc pl-6 mb-4 space-y-1">
+                <li>Never submit or publish AI-generated facts without checking them against an independent, reliable source.</li>
+                <li>Treat all generated citations, statistics, and quotes as unverified, even if the AI insists they are real.</li>
+                <li>Remember that a confident tone does not equal accuracy.</li>
+                <li>Use AI for structure, drafting, and ideas — use verified databases or human check-backs for hard facts.</li>
+            </ul>
+
+            <blockquote class="border-l-4 border-cyan-500 pl-4 italic my-6 text-slate-300">
+                "The cost of trusting a wrong answer is always greater than the cost to verify it."
+            </blockquote>
+
+            <h2>The Bigger Picture</h2>
+            <p>These real-world examples serve as a reminder: AI output should never be categorized as confirmed facts out of the box. The technology itself will not pause or sound hesitant. The responsibility to verify, read critically, and evaluate truth ultimately remains with us.</p>
+
+            <p class="font-semibold text-cyan-300 my-4 text-lg">So, until next time... stay curious, ask questions first, and remember: Just because it sounds good does not mean it is true.</p>
+            <p class="text-sm font-mono text-muted">Thanks for reading! 🚀</p>
+        `,
+        likes: 0,
+        views: 0,
+        likedIPs: [],
+        commentedIPs: [],
+        comments: []
+    },
+    {
+        id: "4",
+        title: "Can AI Actually Be Creative?",
+        category: "AI & Art",
+        snippet: "An unexpected machine is not the same as an unintended machine. Exploring move 37, digital art competitions, and whether statistical probability equals artistic originality.",
+        content: `
+            <p class="text-sm font-mono text-cyan-400 mb-6">--- By Ayush Singh Rathor, B.Tech CSE (AI & ML), VIT</p>
+
+            <blockquote class="border-l-4 border-cyan-500 pl-4 italic my-6 text-slate-300 font-serif text-lg">
+                "An unexpected machine is not the same as an unintended machine."
+            </blockquote>
+
+            <p>While discussing trusting AI in my previous blog, I was left perplexed by whether AI is truly innovative or simply repeating existing information. This leads me to wonder about the nature of machine creativity.</p>
+
+            <h2>1. Typing Words in a Box</h2>
+            <p>In 2022, Jason Allen entered the Colorado State Fair's digital arts competition with his piece <em>"Théâtre D'opéra Spatial."</em> The artwork depicted a grand hall adorned with classical figures gazing out toward luminous, starry vistas. He generated it using Midjourney after fine-tuning roughly 624 text prompts. And it won first place.</p>
+
+            <p>Artists were furious. The U.S. Copyright Office subsequently refused to grant copyright protection to the piece, stating that it lacked sufficient "human authorship." Allen contested this, arguing that crafting 624 detailed prompts and curating the outputs is akin to a photographer choosing an angle and lighting. The dispute went on to federal court.</p>
+
+            <p>This raises a fundamental question: Does prompting a model to produce imagery constitute creating something genuinely original, or is it merely instructing a sophisticated tool?</p>
+
+            <h2>2. The Infamous Move 37</h2>
+            <p>Consider a contrasting example: In 2016, DeepMind's AlphaGo played against world champion Lee Sedol in the ancient game of Go. In the second game, AlphaGo executed Move 37—a move no professional human player would have ever made. Commentators initially called it a mistake, but it turned out to be a brilliant, game-winning strategy that reshaped centuries of Go theory.</p>
+
+            <p>AlphaGo had no concept of human elegance, intuition, or tradition. Through self-play over millions of games, it uncovered optimal probabilistic patterns that humans had simply never considered.</p>
+
+            <h2>The Tension Between Purpose and Pattern</h2>
+            <p>These two examples highlight a central paradox:</p>
+            <ul class="list-disc pl-6 mb-6 space-y-2">
+                <li><strong>Human Vision, Machine Synthesis:</strong> Jason Allen had artistic intent and human purpose, but the AI model relied on statistical correlations across millions of sample images.</li>
+                <li><strong>Machine Originality, Zero Intention:</strong> AlphaGo produced a move that was profoundly original and functional, yet it had no intent, conscious strategy, or emotion.</li>
+            </ul>
+
+            <p>An AI model operates on probability distributions rather than conscious artistic choices. It combines learned patterns in novel ways, producing outputs that can be stunning, useful, or surprising, but without an inner desire or meaning.</p>
+
+            <h2>Is AI Truly Creative?</h2>
+            <p>It depends on how you define creativity. If creativity means generating unexpected, valuable outcomes (like Move 37), AI certainly qualifies. But if creativity requires emotional resonance, human intention, and personal expression, AI serves primarily as a tool—an exceptionally capable brush, but still a brush.</p>
+
+            <blockquote class="border-l-4 border-cyan-500 pl-4 italic my-6 text-slate-300">
+                "The process of developing a machine is effortless. Our job is still to add meaning."
+            </blockquote>
+
+            <p>Ultimately, the key is to be clear about where the machine's pattern matching ends and our own creative vision begins.</p>
+
+            <p class="font-semibold text-cyan-300 my-4 text-lg">Until next time, keep exploring, persist in creating new things, and remember: The image can be generated by the machine, but you must still decide if it matters.</p>
+            <p class="text-sm font-mono text-muted">Thanks for reading! 🚀</p>
         `,
         likes: 0,
         views: 0,
