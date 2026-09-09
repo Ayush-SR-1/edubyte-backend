@@ -120,10 +120,21 @@ app.post('/api/posts/:id/comment', async (req, res) => {
   }
 });
 
-// Seed Endpoint containing both posts
+// Seed Endpoint containing both posts (with automatic index cleanup)
 app.get('/api/seed', async (req, res) => {
   try {
+    // Drop the conflicting 'id_1' index if it exists in MongoDB
+    try {
+      await Post.collection.dropIndex('id_1');
+      console.log('Dropped stale id_1 index from MongoDB');
+    } catch (indexErr) {
+      // Ignore error if index doesn't exist
+    }
+
+    // Clear existing documents
     await Post.deleteMany({});
+
+    // Insert both posts with full HTML content & Cloudinary images
     await Post.insertMany([
       {
         title: "Why Does AI \"Lie\"? Understanding Hallucination in Large Language Models",
@@ -245,6 +256,7 @@ app.get('/api/seed', async (req, res) => {
         comments: []
       }
     ]);
+
     res.json({ success: true, message: "Database seeded successfully with both articles!" });
   } catch (error) {
     res.status(500).json({ error: "Seeding failed", details: error.message });
