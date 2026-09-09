@@ -1,145 +1,124 @@
 const express = require('express');
 const cors = require('cors');
-const axios = require('axios');
-require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
-
 app.use(cors());
 app.use(express.json());
 
-// Enhanced Blogger Feed URL with max-results parameters
-const BLOGGER_FEED_URL = 'https://edubyte-tech.blogspot.com/feeds/posts/default?alt=json&max-results=50';
+// Trust proxy headers for deployment platforms like Render / Vercel
+app.set('trust proxy', true);
 
-// In-Memory Storage for Views, Likes, and Comments
-const postMetrics = {};
+// Change this key to whatever secret key you prefer
+const OWNER_SECRET_KEY = 'ayush-admin-secret'; 
 
-// Helper: Strip HTML tags for clean text card snippets
-function createSnippet(htmlStr, maxLength = 160) {
-    if (!htmlStr) return '';
-    const cleanText = htmlStr.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
-    if (cleanText.length <= maxLength) return cleanText;
-    return cleanText.substring(0, maxLength) + '...';
+// In-memory posts store
+let posts = [
+    {
+        id: "1",
+        title: "Can AI Actually Be Creative?",
+        category: "AI Art",
+        snippet: "An unexpected machine is not the same as an unintended machine. While discussing creativity...",
+        content: "<p>Can an algorithm truly possess an artistic soul? When Midjourney generates a painting or Claude composes a poem, we are witnessing complex statistical pattern matching—not human emotion.</p>",
+        likes: 0,
+        views: 0,
+        likedIPs: [],      
+        commentedIPs: [],  
+        comments: []
+    },
+    {
+        id: "2",
+        title: "Can We Trust AI-Generated Information?",
+        category: "AI Ethics",
+        snippet: "The concept of AI trust and digital verification utilizes structured validation against hallucinated data...",
+        content: "<p>Large Language Models are non-deterministic, meaning they generate responses based on probability rather than verified truth. Trusting AI requires robust verification frameworks.</p>",
+        likes: 0,
+        views: 0,
+        likedIPs: [],
+        commentedIPs: [],
+        comments: []
+    }
+];
+
+function getClientIp(req) {
+    return req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip || req.socket.remoteAddress;
 }
 
-// Helper: Extract complete HTML body from Blogger post object
-function extractFullContent(entry) {
-    if (entry.content && entry.content.$t) {
-        return entry.content.$t;
-    }
-    if (entry.summary && entry.summary.$t) {
-        return entry.summary.$t;
-    }
-    return '';
+function isOwner(req) {
+    return req.headers['x-owner-key'] === OWNER_SECRET_KEY;
 }
 
-// 1. GET /api/posts - Fetch & Serve Complete Blog Posts
-app.get('/api/posts', async (req, res) => {
-    try {
-        const response = await axios.get(BLOGGER_FEED_URL);
-        const entries = response.data.feed.entry || [];
-
-        const posts = entries.map((entry, index) => {
-            // Generate clean post ID
-            const rawId = entry.id ? entry.id.$t : `post-${index}`;
-            const id = rawId.split('post-').pop() || `id-${index}`;
-
-            // Extract the FULL article HTML content
-            const fullHtmlContent = extractFullContent(entry);
-
-            // Category tag
-            const category = (entry.category && entry.category[0]) ? entry.category[0].term : 'Tech Blog';
-
-            // Post Link
-            const linkObj = entry.link ? entry.link.find(l => l.rel === 'alternate') : null;
-            const link = linkObj ? linkObj.href : '';
-
-            // Initialize post metrics memory
-            if (!postMetrics[id]) {
-                postMetrics[id] = { views: 0, likes: 0, comments: [] };
-            }
-
-            return {
-                id: id,
-                title: entry.title ? entry.title.$t : 'Untitled Post',
-                link: link,
-                category: category,
-                snippet: createSnippet(fullHtmlContent),
-                content: fullHtmlContent, // Sent directly to the frontend reader modal
-                views: postMetrics[id].views,
-                likes: postMetrics[id].likes,
-                comments: postMetrics[id].comments
-            };
-        });
-
-        res.json({
-            success: true,
-            count: posts.length,
-            posts: posts
-        });
-
-    } catch (err) {
-        console.error('Error fetching Blogger feed:', err.message);
-        res.status(500).json({
-            success: false,
-            message: 'Failed to fetch Blogger posts',
-            error: err.message
-        });
-    }
+// 1. Fetch All Posts
+app.get('/api/posts', (req, res) => {
+    res.json({ success: true, posts });
 });
 
-// 2. POST /api/posts/:id/view - Increment Views
+// 2. Increment Views
 app.post('/api/posts/:id/view', (req, res) => {
-    const { id } = req.params;
-    if (!postMetrics[id]) {
-        postMetrics[id] = { views: 0, likes: 0, comments: [] };
-    }
-    postMetrics[id].views += 1;
+    const post = posts.find(p => p.id === req.params.id);
+    if (!post) return res.status(404).json({ success: false, message: 'Post not found' });
 
-    res.json({ success: true, views: postMetrics[id].views });
+    post.views = (post.views || 0) + 1;
+    res.json({ success: true, views: post.views });
 });
 
-// 3. POST /api/posts/:id/like - Increment Likes
+// 3. Like Post (1 per IP, Unlimited for Owner)
 app.post('/api/posts/:id/like', (req, res) => {
-    const { id } = req.params;
-    if (!postMetrics[id]) {
-        postMetrics[id] = { views: 0, likes: 0, comments: [] };
-    }
-    postMetrics[id].likes += 1;
+    const post = posts.find(p => p.id === req.params.id);
+    if (!post) return res.status(404).json({ success: false, message: 'Post not found' });
 
-    res.json({ success: true, likes: postMetrics[id].likes });
+    const clientIp = getClientIp(req);
+    post.likedIPs = post.likedIPs || [];
+
+    if (!isOwner(req) && post.likedIPs.includes(clientIp)) {
+        return res.status(400).json({ 
+            success: false, 
+            message: 'You have already liked this post.',
+            likes: post.likes
+        });
+    }
+
+    if (!isOwner(req)) {
+        post.likedIPs.push(clientIp);
+    }
+
+    post.likes = (post.likes || 0) + 1;
+    res.json({ success: true, likes: post.likes });
 });
 
-// 4. POST /api/posts/:id/comment - Add Comment
+// 4. Comment on Post (1 per IP, Unlimited for Owner)
 app.post('/api/posts/:id/comment', (req, res) => {
-    const { id } = req.params;
-    const { user, text } = req.body;
+    const post = posts.find(p => p.id === req.params.id);
+    if (!post) return res.status(404).json({ success: false, message: 'Post not found' });
 
-    if (!text || text.trim() === '') {
-        return res.status(400).json({ success: false, message: 'Comment text cannot be empty' });
+    const clientIp = getClientIp(req);
+    post.commentedIPs = post.commentedIPs || [];
+
+    if (!isOwner(req) && post.commentedIPs.includes(clientIp)) {
+        return res.status(400).json({ 
+            success: false, 
+            message: 'You have already commented on this post.' 
+        });
     }
 
-    if (!postMetrics[id]) {
-        postMetrics[id] = { views: 0, likes: 0, comments: [] };
+    const { user, text } = req.body;
+    if (!text || text.trim() === '') {
+        return res.status(400).json({ success: false, message: 'Comment text is required.' });
+    }
+
+    if (!isOwner(req)) {
+        post.commentedIPs.push(clientIp);
     }
 
     const newComment = {
-        user: user || 'Anonymous',
+        id: Date.now().toString(),
+        user: user && user.trim() ? user.trim() : 'Anonymous',
         text: text.trim(),
-        timestamp: new Date().toISOString()
+        date: new Date()
     };
 
-    postMetrics[id].comments.push(newComment);
-
-    res.json({ success: true, comments: postMetrics[id].comments });
+    post.comments.push(newComment);
+    res.json({ success: true, comments: post.comments });
 });
 
-// Health check endpoint
-app.get('/', (req, res) => {
-    res.send('EduByte Backend API is active.');
-});
-
-app.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`);
-});
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
