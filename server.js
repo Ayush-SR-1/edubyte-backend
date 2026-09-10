@@ -184,7 +184,7 @@ app.get('/api/seed', async (req, res) => {
         author: "Ayush Singh Rathor",
         category: "AI & ML",
         readTime: "7 min read",
-        date: "Sep 9, 2026",
+        date: "Aug 30, 2026",
         views: 0,
         likes: 0,
         comments: []
@@ -256,7 +256,7 @@ app.get('/api/seed', async (req, res) => {
         author: "Ayush Singh Rathor",
         category: "AI & ML",
         readTime: "8 min read",
-        date: "Sep 9, 2026",
+        date: "Aug 27, 2026",
         views: 0,
         likes: 0,
         comments: []
@@ -332,8 +332,8 @@ app.get('/api/seed', async (req, res) => {
         <p>Thanks for reading! 🚀</p>`,
         author: "Ayush Singh Rathor",
         category: "AI & ML",
-        readTime: "7 min read",
-        date: "Sep 10, 2026",
+        readTime: "8 min read",
+        date: "Aug 24, 2026",
         views: 0,
         likes: 0,
         comments: []
@@ -374,8 +374,8 @@ app.get('/api/seed', async (req, res) => {
         <p>We are only now entering the realm of AI. Until then, stay curious, continue to learn, and remember: <b>AI's objective is to enhance human intelligence, not to replace it.</b> Thanks for reading! 🚀</p>`,
         author: "Ayush Singh Rathor",
         category: "AI & ML",
-        readTime: "6 min read",
-        date: "Sep 9, 2026",
+        readTime: "7 min read",
+        date: "Aug 21, 2026",
         views: 0,
         likes: 0,
         comments: []
