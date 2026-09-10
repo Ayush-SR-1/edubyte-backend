@@ -184,7 +184,7 @@ app.get('/api/seed', async (req, res) => {
         author: "Ayush Singh Rathor",
         category: "AI & ML",
         readTime: "7 min read",
-        date: "Aug 30, 2026",
+        date: "Sep 6, 2026",
         views: 0,
         likes: 0,
         comments: []
@@ -256,7 +256,7 @@ app.get('/api/seed', async (req, res) => {
         author: "Ayush Singh Rathor",
         category: "AI & ML",
         readTime: "8 min read",
-        date: "Aug 27, 2026",
+        date: "Sep 2, 2026",
         views: 0,
         likes: 0,
         comments: []
@@ -333,7 +333,7 @@ app.get('/api/seed', async (req, res) => {
         author: "Ayush Singh Rathor",
         category: "AI & ML",
         readTime: "8 min read",
-        date: "Aug 24, 2026",
+        date: "Aug 30, 2026",
         views: 0,
         likes: 0,
         comments: []
@@ -375,7 +375,7 @@ app.get('/api/seed', async (req, res) => {
         author: "Ayush Singh Rathor",
         category: "AI & ML",
         readTime: "7 min read",
-        date: "Aug 21, 2026",
+        date: "Aug 27, 2026",
         views: 0,
         likes: 0,
         comments: []
