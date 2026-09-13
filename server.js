@@ -120,6 +120,24 @@ app.post('/api/posts/:id/comment', async (req, res) => {
   }
 });
 
+// Delete a comment from a post
+app.delete('/api/posts/:id/comments/:commentId', async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) return res.status(404).json({ error: 'Post not found' });
+
+    const commentExists = post.comments.id(req.params.commentId);
+    if (!commentExists) return res.status(404).json({ error: 'Comment not found' });
+
+    post.comments.pull({ _id: req.params.commentId });
+    await post.save();
+
+    res.json(post);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete comment' });
+  }
+});
+
 // Seed Endpoint containing all 4 posts (with index cleanup)
 app.get('/api/seed', async (req, res) => {
   try {
@@ -355,7 +373,7 @@ app.get('/api/seed', async (req, res) => {
         <p>Having grasped the basics of AI, let's decipher some familiar myths.</p>
         <h3>Myth #1: AI is set to dominate the world.</h3>
         <p>This is probably the most popular myth, thanks to movies and science fiction stories. The idea of super-intelligent machines controlling humanity sounds exciting, but it is far from reality. Modern AI systems are engineered to serve a purpose for specific tasks. A text-generating AI cannot operate a car, bank account, or power grids without human intervention.</p>
-        <p>AI lacks any specific aims, feelings, goals, or desires. It doesn't “want” anything. The system's functionality is based on its ability to recognise patterns from data and react to the input it receives.</p>
+        <p>AI lacks any specific aims, feelings, goals, or desires. It doesn't "want" anything. The system's functionality is based on its ability to recognise patterns from data and react to the input it receives.</p>
         <p>This isn't a takeover by AI; it's just about solving the real problem.</p>
         <p><img src="https://res.cloudinary.com/dbef59ec/image/upload/v1788944905/original.webp" alt="AI Takeover Myth" style="width:100%; max-width:700px; margin: 20px 0; border-radius: 8px;" /></p>
         <p>Science-fiction scenarios are not as important as issues of misinformation, privacy, bias in algorithms, and excessive reliance on AI. <b>Fact:</b> AI is a system that is designed and engineered by humans. People are always responsible for its actions, not machines.</p>
