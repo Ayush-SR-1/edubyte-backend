@@ -70,6 +70,24 @@ app.post('/api/posts', async (req, res) => {
   }
 });
 
+// Update a post's fields (used by the admin "Edit Date" feature, but works for any allowed field)
+app.patch('/api/posts/:id', async (req, res) => {
+  try {
+    const allowedFields = ['title', 'excerpt', 'content', 'category', 'readTime', 'date'];
+    const updates = {};
+    for (const field of allowedFields) {
+      if (req.body[field] !== undefined) updates[field] = req.body[field];
+    }
+
+    const post = await Post.findByIdAndUpdate(req.params.id, updates, { new: true });
+    if (!post) return res.status(404).json({ error: 'Post not found' });
+
+    res.json(post);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update post' });
+  }
+});
+
 // Get single post and increment view count
 app.get('/api/posts/:id', async (req, res) => {
   try {
