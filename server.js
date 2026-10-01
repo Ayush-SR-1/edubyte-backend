@@ -424,6 +424,20 @@ app.get('/api/seed', async (req, res) => {
   }
 });
 
+// Verify admin passcode (checked here on the server so the real value is
+// never shipped to the browser — set ADMIN_PASSCODE in your environment)
+app.post('/api/admin/verify', (req, res) => {
+  const { passcode } = req.body;
+  const correctPasscode = process.env.ADMIN_PASSCODE;
+
+  if (!correctPasscode) {
+    return res.status(500).json({ success: false, error: 'ADMIN_PASSCODE is not configured on the server' });
+  }
+
+  const isCorrect = passcode === correctPasscode;
+  res.json({ success: isCorrect });
+});
+
 // Start Server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
